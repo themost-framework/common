@@ -108,3 +108,4 @@ dist
 .vscode
 .theia
 .DS_Store
+.devcontainer
