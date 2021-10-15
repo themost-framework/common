@@ -1,12 +1,13 @@
 {
   "name": "@themost/common",
-  "version": "2.5.6",
-  "description": "MOST Web Framework Codename Blueshift - Common Module",
+  "version": "3.1.0-next.1",
+  "description": "MOST Web Framework Codename ZeroGravity - Common Module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "build": "rimraf dist && rollup -c ./rollup.config.js"
   },
   "repository": {
     "type": "git",
@@ -53,5 +54,6 @@
     "ts-node": "^9.0.0",
     "tslint": "^6.1.3",
     "typescript": "^4.2.4"
-  }
+  },
+  "peerDependencies": {}
 }

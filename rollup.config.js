@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const dts = require('rollup-plugin-dts').default;
-const babel = require('@rollup/plugin-babel').default;
+const {babel} = require('@rollup/plugin-babel');
 const pkg = require('./package.json');
 module.exports = [{
     input: './src/index.js',
