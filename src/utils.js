@@ -632,8 +632,6 @@ class TraceUtils {
     }
 }
 
-TraceUtils[loggerProperty] = new TraceLogger();
-
 class RandomUtils {
     constructor() {
         //
@@ -996,6 +994,8 @@ class TraceLogger {
         }
     }
 }
+
+TraceUtils[loggerProperty] = new TraceLogger();
 
 class Base26Number {
     constructor(value) {

@@ -83,7 +83,6 @@ class SequentialEventEmitter extends EventEmitter {
     // eslint-disable-next-line no-unused-vars
     emit(event, args) {
         //ensure callback
-        let callback = callback || function () { };
         //get listeners
         if (typeof this.listeners !== 'function') {
             throw new Error('undefined listeners');
@@ -98,7 +97,7 @@ class SequentialEventEmitter extends EventEmitter {
             }
         }
         //get callback function (the last argument of arguments list)
-        callback = argsAndCallback[argsAndCallback.length - 1];
+        let callback = argsAndCallback[argsAndCallback.length - 1];
 
         //validate listeners
         if (listeners.length === 0) {
