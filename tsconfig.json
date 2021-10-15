@@ -4,6 +4,8 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "sourceMap": true,
+        "declarationMap": true,
+        "declarationDir": ".",
         "declaration": true,
         "outDir": "dist",
         "removeComments": false,
@@ -14,6 +16,7 @@
     },
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "spec"
     ]
 }

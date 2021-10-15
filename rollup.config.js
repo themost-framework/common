@@ -27,6 +27,6 @@ module.exports = [{
         // add extra sub-modules
     ),
     plugins: [
-        typescript()
+        typescript({ tsconfig: './tsconfig.json' })
     ]
 }];
