@@ -5,10 +5,11 @@
         "experimentalDecorators": true,
         "sourceMap": true,
         "declaration": true,
+        "outDir": "dist",
         "removeComments": false,
         "noImplicitAny": true,
         "moduleResolution": "node",
-        "module": "commonjs",
+        "module": "ESNext",
         "target": "es5"
     },
     "exclude": [

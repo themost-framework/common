@@ -1,7 +1,6 @@
 // MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
 
 import { escape, repeat } from 'lodash';
-// eslint-disable-next-line no-unused-vars
 const HTML_START_CHAR = '<';
 const HTML_END_CHAR = '>';
 const HTML_FULL_END_STRING = ' />';
@@ -10,7 +9,15 @@ const HTML_ATTR_STRING = '%0="%1"';
 const HTML_START_TAG_STRING = '<%0';
 const HTML_END_TAG_STRING = '</%0>';
 
+declare interface PropertyIndexer {
+    [key: string]: any;
+}
+
 class HtmlWriter {
+    bufferedAttributes: any[];
+    buffer: string;
+    indent: boolean;
+    bufferedTags: any[];
     constructor() {
         /**
          * @private
@@ -40,7 +47,7 @@ class HtmlWriter {
      * @param {String} value - The value of the HTML attribute
      * @returns {HtmlWriter}
      */
-    writeAttribute(name, value) {
+    writeAttribute(name: string, value: string): this {
         this.bufferedAttributes.push({ name: name, value: value });
         return this;
     }
@@ -50,7 +57,7 @@ class HtmlWriter {
      * @param {Array|Object} obj - An array of attributes or an object that represents an array of attributes
      * @returns {HtmlWriter}
      */
-    writeAttributes(obj) {
+    writeAttributes(obj: any[] | {}): this {
         if (obj === null) {
             return this;
         }
@@ -59,10 +66,11 @@ class HtmlWriter {
                 this.bufferedAttributes.push({ name: obj[i].name, value: obj[i].value });
             }
         } else {
-            for (let prop in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-                    if (obj[prop] !== null) {
-                        this.bufferedAttributes.push({ name: prop, value: obj[prop] });
+            const indexed = obj as PropertyIndexer;
+            for (let prop in indexed) {
+                if (Object.prototype.hasOwnProperty.call(indexed, prop)) {
+                    if (indexed[prop] !== null) {
+                        this.bufferedAttributes.push({ name: prop, value: indexed[prop] });
                     }
                 }
             }
@@ -74,7 +82,7 @@ class HtmlWriter {
      * @param {String} tag
      * @returns {HtmlWriter}
      */
-    writeBeginTag(tag) {
+    writeBeginTag(tag: string): this {
         //write <TAG
         if (this.indent) {
             //this.buffer += '\n';
@@ -101,7 +109,7 @@ class HtmlWriter {
      * @param {String} tag
      * @returns {HtmlWriter}
      */
-    writeFullBeginTag(tag) {
+    writeFullBeginTag(tag: string): this {
         //write <TAG
         if (this.indent) {
             this.buffer += '\n';
@@ -126,7 +134,7 @@ class HtmlWriter {
      * Writes an end HTML tag (e.g </div>) based on the current buffered tags.
      * @returns {HtmlWriter}
      */
-    writeEndTag() {
+    writeEndTag(): this {
         let tagsLength = this.bufferedTags ? this.bufferedTags.length : 0;
         if (tagsLength === 0) {
             return this;
@@ -145,7 +153,7 @@ class HtmlWriter {
      * @param {String} s
      * @returns {HtmlWriter}
      */
-    writeText(s) {
+    writeText(s: string): this {
         if (!s) {
             return this;
         }
@@ -161,7 +169,7 @@ class HtmlWriter {
      * @param {String} s
      * @returns {HtmlWriter}
      */
-    write(s) {
+    write(s: string): this {
         this.buffer += s;
         return this;
     }
@@ -175,7 +183,7 @@ class HtmlWriter {
     /**
      * @param {function} writeFunc
      */
-    writeTo(writeFunc) {
+    writeTo(writeFunc: (s: string) => void) {
         if (typeof writeFunc === 'function') {
             //call function
             writeFunc(this.buffer);

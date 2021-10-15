@@ -1,9 +1,8 @@
 // eslint-disable-next-line no-unused-vars
-const dts = require('rollup-plugin-dts').default;
-const {babel} = require('@rollup/plugin-babel');
+const typescript = require('@rollup/plugin-typescript');
 const pkg = require('./package.json');
 module.exports = [{
-    input: './src/index.js',
+    input: './src/index.ts',
     output: [
         {
             name: '@themost/common',
@@ -24,23 +23,10 @@ module.exports = [{
             sourcemap: true
         },
     ],
-    external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)).concat(
-        'lodash/repeat',
-        'lodash/escape'
+    external: Object.keys(pkg.dependencies).concat(
+        // add extra sub-modules
     ),
     plugins: [
-        babel({
-            babelHelpers: 'runtime'
-        })
+        typescript()
     ]
-}, {
-    input: './src/index.d.ts',
-    output: [{
-        file: 'dist/index.d.ts'
-    }],
-    plugins: [
-        dts()
-    ],
-    external: Object.keys(pkg.dependencies)
-        .concat(Object.keys(pkg.peerDependencies))
 }];

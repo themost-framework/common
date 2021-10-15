@@ -7,7 +7,7 @@ import { applyEachSeries } from 'async';
  * Wraps an async listener and returns a callback-like function
  * @param {function(...*):Promise<void>} asyncListener
  */
-function wrapAsyncListener(asyncListener) {
+function wrapAsyncListener(asyncListener: (...arg: any) => Promise<void>) {
     /**
      * @this SequentialEventEmitter
      */
@@ -18,7 +18,7 @@ function wrapAsyncListener(asyncListener) {
         let callback = arguments[arguments.length - 1];
         return asyncListener.apply(this, args).then(function() {
             return callback();
-        }).catch(function(err) {
+        }).catch((err: Error) => {
             return callback(err);
         });
     }
@@ -36,7 +36,7 @@ function wrapAsyncListener(asyncListener) {
  * @param {string} event
  * @param {function(...*):Promise<void>} asyncListener
  */
-function wrapOnceAsyncListener(event, asyncListener) {
+function wrapOnceAsyncListener(event: string | symbol, asyncListener: (...arg: any) => Promise<void>) {
     /**
      * @this SequentialEventEmitter
      */
@@ -51,7 +51,7 @@ function wrapOnceAsyncListener(event, asyncListener) {
             // manually remove async listener
             self.removeListener(event, callee);
             return callback();
-        }).catch(function(err) {
+        }).catch((err: Error) => {
             // manually remove async listener
             self.removeListener(event, callee);
             return callback(err);
@@ -81,7 +81,7 @@ class SequentialEventEmitter extends EventEmitter {
      * @param {...*} args - An object that contains the event arguments.
      */
     // eslint-disable-next-line no-unused-vars
-    emit(event, args) {
+    emit(event: string | symbol, ...args: any[]): any {
         //ensure callback
         //get listeners
         if (typeof this.listeners !== 'function') {
@@ -114,7 +114,7 @@ class SequentialEventEmitter extends EventEmitter {
      * @param {function(...*):Promise<void>} asyncListener
      * @returns this
      */
-    subscribe(event, asyncListener) {
+    subscribe(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this {
         return this.on(event, wrapAsyncListener(asyncListener));
     }
     // noinspection JSUnusedGlobalSymbols
@@ -124,12 +124,12 @@ class SequentialEventEmitter extends EventEmitter {
      * @param {function(...*):Promise<void>} asyncListener
      * @returns this
      */
-    unsubscribe(event, asyncListener) {
+    unsubscribe(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this {
         // get event listeners
         let listeners = this.listeners(event);
         // enumerate
         for (let i = 0; i < listeners.length; i++) {
-            let item = listeners[i];
+            let item: any | { _listener: Function} = listeners[i];
             // if listener has an underlying listener
             if (typeof item._listener === 'function') {
                 // and it's the same with the listener specified
@@ -148,7 +148,7 @@ class SequentialEventEmitter extends EventEmitter {
      * @param {string} event
      * @param {function(...*):Promise<void>} asyncListener
      */
-    subscribeOnce(event, asyncListener) {
+    subscribeOnce(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this {
         return this.once(event, wrapOnceAsyncListener(event, asyncListener));
     }
     // noinspection JSUnusedGlobalSymbols
@@ -158,17 +158,17 @@ class SequentialEventEmitter extends EventEmitter {
      * @param {...args} args
      */
     // eslint-disable-next-line no-unused-vars
-    next(event, args) {
+    next(event: string | symbol, ...args: any[]): Promise<void> {
         let self = this;
         /**
          * get arguments as array
          * @type {*[]}
          */
-        let argsAndCallback = [event].concat(Array.prototype.slice.call(arguments, 1));
+        let argsAndCallback: any[] = [event].concat(Array.prototype.slice.call(arguments, 1));
         // eslint-disable-next-line no-undef
         return new Promise(function (resolve, reject) {
             // set callback
-            argsAndCallback.push(function (err) {
+            argsAndCallback.push((err: Error) => {
                 if (err) {
                     return reject(err);
                 }

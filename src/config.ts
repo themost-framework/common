@@ -4,28 +4,38 @@ let _ = require('lodash');
 import { Args, TraceUtils, PathUtils } from './utils';
 import { AbstractClassError } from './errors';
 
-let configProperty = Symbol('config');
-let currentConfiguration = Symbol('current');
-let configPathProperty = Symbol('configurationPath');
-let executionPathProperty = Symbol('executionPath');
-let strategiesProperty = Symbol('strategies');
+declare interface WindowEnv {
+    env?: {
+        BROWSER_ENV?: string;
+    };
+}
+
+declare type StrategyConstructor<T> = Function & { prototype: T };
 
 /**
  * @class Represents an application configuration
- * @param {string=} configPath
+ * @param {string=} configurationPath
  * @property {*} settings
  * @constructor
  */
 class ConfigurationBase {
-    constructor(configPath) {
+
+    private _strategies: any;
+    private _configurationPath: string;
+    private _executionPath: string;
+    private _config: any;
+
+    private static _currentConfiguration: ConfigurationBase;
+
+    constructor(configurationPath?: any) {
         //init strategies
-        this[strategiesProperty] = {};
+        this._strategies = {};
 
-        this[configPathProperty] = configPath || PathUtils.join(process.cwd(), 'config');
-        TraceUtils.debug('Initializing configuration under %s.', this[configPathProperty]);
+        this._configurationPath = configurationPath || PathUtils.join(process.cwd(), 'config');
+        TraceUtils.debug('Initializing configuration under %s.', this._configurationPath);
 
-        this[executionPathProperty] = PathUtils.join(this[configPathProperty], '..');
-        TraceUtils.debug('Setting execution path under %s.', this[executionPathProperty]);
+        this._executionPath = PathUtils.join(this._configurationPath, '..');
+        TraceUtils.debug('Setting execution path under %s.', this._executionPath);
 
         //load default module loader strategy
         this.useStrategy(ModuleLoaderStrategy, DefaultModuleLoaderStrategy);
@@ -37,21 +47,20 @@ class ConfigurationBase {
             //node.js mode
             if (process && process.env) {
                 env = process.env['NODE_ENV'] || 'production';
+            } else if (window && Object.prototype.hasOwnProperty.call(window, 'env')) {
+                //browser mode
+                env = (window as WindowEnv).env.BROWSER_ENV || 'production';
             }
-            //browser mode
-            else if (window && window.env) {
-                env = window.env['BROWSER_ENV'] || 'production';
-            }
-            configSourcePath = PathUtils.join(this[configPathProperty], 'app.' + env + '.json');
-            TraceUtils.debug('Validating environment configuration source on %s.', configSourcePath);
-            this[configProperty] = require(configSourcePath);
+            configSourcePath = PathUtils.join(this._configurationPath, 'app.' + env + '.json');
+            TraceUtils.debug(`Validating environment configuration source on ${configSourcePath}.`);
+            this._config = require(configSourcePath);
         } catch (err) {
             if (err.code === 'MODULE_NOT_FOUND') {
                 TraceUtils.log('The environment specific configuration cannot be found or is inaccessible.');
                 try {
-                    configSourcePath = PathUtils.join(this[configPathProperty], 'app.json');
+                    configSourcePath = PathUtils.join(this._configurationPath, 'app.json');
                     TraceUtils.debug('Validating application configuration source on %s.', configSourcePath);
-                    this[configProperty] = require(configSourcePath);
+                    this._config = require(configSourcePath);
                 } catch (err) {
                     if (err.code === 'MODULE_NOT_FOUND') {
                         TraceUtils.log('The default application configuration cannot be found or is inaccessible.');
@@ -60,17 +69,17 @@ class ConfigurationBase {
                         TraceUtils.error(err);
                     }
                     TraceUtils.debug('Initializing empty configuration');
-                    this[configProperty] = {};
+                    this._config = {};
                 }
             } else {
                 TraceUtils.error('An error occurred while trying to open application configuration.');
                 TraceUtils.error(err);
                 //load default configuration
-                this[configProperty] = {};
+                this._config = {};
             }
         }
         //initialize settings object
-        this[configProperty]['settings'] = this[configProperty]['settings'] || {};
+        this._config['settings'] = this._config['settings'] || {};
 
         /**
          * @name ConfigurationBase#settings
@@ -78,7 +87,7 @@ class ConfigurationBase {
          */
         Object.defineProperty(this, 'settings', {
             get: function () {
-                return this[configProperty]['settings'];
+                return this._config['settings'];
             },
             enumerable: true,
             configurable: false
@@ -91,7 +100,7 @@ class ConfigurationBase {
      * @returns {*}
      */
     getSource() {
-        return this[configProperty];
+        return this._config;
     }
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -99,8 +108,8 @@ class ConfigurationBase {
      * @param {string} p - A string which represents an object path
      * @returns {Object|Array}
      */
-    getSourceAt(p) {
-        return _.at(this[configProperty], p.replace(/\//g, '.'))[0];
+    getSourceAt(p: string): any {
+        return _.at(this._config, p.replace(/\//g, '.'))[0];
     }
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -108,8 +117,8 @@ class ConfigurationBase {
      * @param {string} p - A string which represents an object path
      * @returns {boolean}
      */
-    hasSourceAt(p) {
-        return _.isObject(_.at(this[configProperty], p.replace(/\//g, '.'))[0]);
+    hasSourceAt(p: string): boolean {
+        return _.isObject(_.at(this._config, p.replace(/\//g, '.'))[0]);
     }
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -118,8 +127,8 @@ class ConfigurationBase {
      * @param {*} value
      * @returns {Object}
      */
-    setSourceAt(p, value) {
-        return _.set(this[configProperty], p.replace(/\//g, '.'), value);
+    setSourceAt(p: string, value: any): void {
+        return _.set(this._config, p.replace(/\//g, '.'), value);
     }
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -127,23 +136,23 @@ class ConfigurationBase {
      * @param {string} p
      * @returns ConfigurationBase
      */
-    setExecutionPath(p) {
-        this[executionPathProperty] = p;
+    setExecutionPath(p: string): this {
+        this._executionPath = p;
         return this;
     }
     /**
      * Gets the current execution path
      * @returns {string}
      */
-    getExecutionPath() {
-        return this[executionPathProperty];
+    getExecutionPath(): string {
+        return this._executionPath;
     }
     /**
      * Gets the current configuration path
      * @returns {string}
      */
-    getConfigurationPath() {
-        return this[configPathProperty];
+    getConfigurationPath(): string {
+        return this._configurationPath;
     }
     /**
      * Register a configuration strategy
@@ -151,55 +160,55 @@ class ConfigurationBase {
      * @param {Function=} strategyCtor
      * @returns ConfigurationBase
      */
-    useStrategy(strategyBaseCtor, strategyCtor) {
+    useStrategy(strategyBaseCtor: any, strategyCtor?: any) {
         Args.notFunction(strategyBaseCtor, 'Configuration strategy constructor');
         if (typeof strategyCtor === 'undefined') {
-            this[strategiesProperty]['$'.concat(strategyBaseCtor.name)] = new strategyBaseCtor(this);
+            this._strategies['$'.concat(strategyBaseCtor.name)] = new strategyBaseCtor(this);
             return this;
         }
         Args.notFunction(strategyCtor, 'Strategy constructor');
-        this[strategiesProperty]['$'.concat(strategyBaseCtor.name)] = new strategyCtor(this);
+        this._strategies['$'.concat(strategyBaseCtor.name)] = new strategyCtor(this);
         return this;
     }
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Gets a configuration strategy
      * @param {Function} strategyBaseCtor
      */
-    getStrategy(strategyBaseCtor) {
+     getStrategy<T>(strategyBaseCtor: StrategyConstructor<T>): T {
         Args.notFunction(strategyBaseCtor, 'Configuration strategy constructor');
-        return this[strategiesProperty]['$'.concat(strategyBaseCtor.name)];
+        return this._strategies['$'.concat(strategyBaseCtor.name)];
     }
+
     /**
      * Gets a configuration strategy
      * @param {Function} strategyBaseCtor
      */
-    hasStrategy(strategyBaseCtor) {
+    hasStrategy(strategyBaseCtor: any) {
         Args.notFunction(strategyBaseCtor, 'Configuration strategy constructor');
-        return typeof this[strategiesProperty]['$'.concat(strategyBaseCtor.name)] !== 'undefined';
+        return typeof this._strategies['$'.concat(strategyBaseCtor.name)] !== 'undefined';
     }
     /**
      * Gets the current configuration
      * @returns ConfigurationBase - An instance of DataConfiguration class which represents the current data configuration
      */
     static getCurrent() {
-        if (ConfigurationBase[currentConfiguration] == null) {
-            ConfigurationBase[currentConfiguration] = new ConfigurationBase();
+        if (ConfigurationBase._currentConfiguration == null) {
+            ConfigurationBase._currentConfiguration = new ConfigurationBase();
         }
-        return ConfigurationBase[currentConfiguration];
+        return ConfigurationBase._currentConfiguration;
     }
     /**
      * Sets the current configuration
      * @param {ConfigurationBase} configuration
      * @returns ConfigurationBase - An instance of ApplicationConfiguration class which represents the current configuration
      */
-    static setCurrent(configuration) {
+    static setCurrent(configuration: ConfigurationBase) {
         if (configuration instanceof ConfigurationBase) {
             if (!configuration.hasStrategy(ModuleLoaderStrategy)) {
                 configuration.useStrategy(ModuleLoaderStrategy, DefaultModuleLoaderStrategy);
             }
-            ConfigurationBase[currentConfiguration] = configuration;
-            return ConfigurationBase[currentConfiguration];
+            ConfigurationBase._currentConfiguration = configuration;
+            return ConfigurationBase._currentConfiguration;
         }
         throw new TypeError('Invalid argument. Expected an instance of DataConfiguration class.');
     }
@@ -209,16 +218,17 @@ class ConfigurationBase {
 
 
 class ConfigurationStrategy {
-    constructor(config) {
-        Args.check(this.constructor.name !== ConfigurationStrategy, new AbstractClassError());
+    private _config: ConfigurationBase;
+    constructor(config: ConfigurationBase) {
+        Args.check(this.constructor.name !== ConfigurationStrategy.name, new AbstractClassError());
         Args.notNull(config, 'Configuration');
-        this[configProperty] = config;
+        this._config = config;
     }
     /**
      * @returns {ConfigurationBase}
      */
     getConfiguration() {
-        return this[configProperty];
+        return this._config;
     }
 }
 
@@ -230,10 +240,10 @@ class ConfigurationStrategy {
  * @extends ConfigurationStrategy
  */
 class ModuleLoaderStrategy extends ConfigurationStrategy {
-    constructor(config) {
+    constructor(config: ConfigurationBase) {
         super(config);
     }
-    require(modulePath) {
+    require(modulePath: string) {
         Args.notEmpty(modulePath, 'Module Path');
         if (!/^.\//i.test(modulePath)) {
             if (require.resolve && require.resolve.paths) {
@@ -275,7 +285,7 @@ class ModuleLoaderStrategy extends ConfigurationStrategy {
 }
 
 class DefaultModuleLoaderStrategy extends ModuleLoaderStrategy {
-    constructor(config) {
+    constructor(config: ConfigurationBase) {
         super(config);
     }
 }

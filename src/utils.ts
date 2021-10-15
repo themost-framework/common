@@ -22,7 +22,7 @@ const GuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-
  * @constructor
  */
 class UnknownPropertyDescriptor {
-    constructor(obj, name) {
+    constructor(obj: any, name: string) {
         Object.defineProperty(this, 'value', { 
             configurable: false,
             enumerable: true,
@@ -61,7 +61,7 @@ class LangUtils {
     }
     LangUtils.inherits(Dog,Animal);
      */
-    static inherits(ctor, superCtor) {
+    static inherits(ctor: any, superCtor: any): void {
 
         if (typeof superCtor !== 'function' && superCtor !== null) {
             throw new TypeError('Super expression must either be null or a function, not ' + typeof superCtor);
@@ -106,7 +106,7 @@ class LangUtils {
      * @param {Function} fn
      * @returns {Array}
      */
-    static getFunctionParams(fn) {
+    static getFunctionParams(fn: any): any[] | RegExpMatchArray {
         if (typeof fn !== 'function'){
             return [];
         }
@@ -117,9 +117,9 @@ class LangUtils {
         return result;
     }
     /**
-     * @param {string} value
+     * @param {*} value
      */
-    static convert(value) {
+    static convert(value: any): any {
         let result;
         if ((typeof value === 'string')) {
             if (value.length === 0) {
@@ -160,7 +160,7 @@ class LangUtils {
      * @param {*=} options
      * @returns {*}
      */
-    static extend(origin, expr, value, options) {
+    static extend(origin: any, expr: string, value: string, options?: any): any {
 
         options = options || { convertValues: false };
         //find base notation
@@ -248,7 +248,7 @@ class LangUtils {
      * @param {*=} options
      * @returns {*}
      */
-    static parseForm(form, options) {
+    static parseForm(form: any, options?:  any): any {
         let result = {};
         if (typeof form === 'undefined' || form === null)
             return result;
@@ -265,7 +265,7 @@ class LangUtils {
      * @param {*} any
      * @returns {*}
      */
-    static parseValue(any) {
+    static parseValue(any: any): any {
         return LangUtils.convert(any);
     }
     /**
@@ -273,7 +273,7 @@ class LangUtils {
      * @param {*} any
      * @returns {*}
      */
-    static parseInt(any) {
+    static parseInt(any: any): number {
         return parseInt(any) || 0;
     }
     /**
@@ -281,7 +281,7 @@ class LangUtils {
      * @param {*} any
      * @returns {*}
      */
-    static parseFloat(any) {
+    static parseFloat(any: any): number {
         return parseFloat(any) || 0;
     }
     /**
@@ -289,7 +289,7 @@ class LangUtils {
      * @param {*} any
      * @returns {*}
      */
-    static parseBoolean(any) {
+    static parseBoolean(any: any): boolean {
         if (typeof any === 'undefined' || any === null)
             return false;
         else if (typeof any === 'number')
@@ -322,7 +322,7 @@ class LangUtils {
      * @param {*} value
      * @returns {boolean}
      */
-    static isDate(value) {
+    static isDate(value: any): boolean {
         if (value instanceof Date) {
             return true;
         }
@@ -347,7 +347,7 @@ class Args {
      * @param {*} expr
      * @param {string|Error} err
      */
-    static check(expr, err) {
+    static check(expr: any, err: string | Error): void {
         Args.notNull(expr, 'Expression');
         let res;
         if (typeof expr === 'function') {
@@ -368,7 +368,7 @@ class Args {
      * @param {*} arg
      * @param {string} name
      */
-    static notNull(arg, name) {
+    static notNull(arg: any, name: string): void {
         if (typeof arg === 'undefined' || arg === null) {
             throw new ArgumentError(name + ' may not be null or undefined', 'ENULL');
         }
@@ -377,7 +377,7 @@ class Args {
      * @param {*} arg
      * @param {string} name
      */
-    static notString(arg, name) {
+    static notString(arg: any, name: string): void {
         if (typeof arg !== 'string') {
             throw new ArgumentError(name + ' must be a string', 'EARG');
         }
@@ -386,7 +386,7 @@ class Args {
      * @param {*} arg
      * @param {string} name
      */
-    static notFunction(arg, name) {
+    static notFunction(arg: any, name: string): void {
         if (typeof arg !== 'function') {
             throw new ArgumentError(name + ' must be a function', 'EARG');
         }
@@ -395,7 +395,7 @@ class Args {
      * @param {*} arg
      * @param {string} name
      */
-    static notNumber(arg, name) {
+    static notNumber(arg: any, name: string): void {
         if ((typeof arg !== 'number') || isNaN(arg)) {
             throw new ArgumentError(name + ' must be number', 'EARG');
         }
@@ -404,7 +404,7 @@ class Args {
      * @param {string|*} arg
      * @param {string} name
      */
-    static notEmpty(arg, name) {
+    static notEmpty(arg: any, name: any): void {
         Args.notNull(arg, name);
         if ((Object.prototype.toString.bind(arg)() === '[object Array]') && (arg.length === 0)) {
             throw new ArgumentError(name + ' may not be empty', 'EEMPTY');
@@ -417,7 +417,7 @@ class Args {
      * @param {number|*} arg
      * @param {string} name
      */
-    static notNegative(arg, name) {
+    static notNegative(arg: any, name: any): void {
         Args.notNumber(arg, name);
         if (arg < 0) {
             throw new ArgumentError(name + ' may not be negative', 'ENEG');
@@ -427,7 +427,7 @@ class Args {
      * @param {number|*} arg
      * @param {string} name
      */
-    static notPositive(arg, name) {
+    static notPositive(arg: any, name: any): void {
         Args.notNumber(arg, name);
         if (arg <= 0) {
             throw new ArgumentError(name + ' may not be negative or zero', 'EPOS');
@@ -444,7 +444,7 @@ class TextUtils {
          * @param {*} value
          * @returns {string|undefined}
          */
-    static toMD5(value) {
+    static toMD5(value: any): string {
 
         if (typeof value === 'undefined' || value === null) {
             return;
@@ -485,7 +485,7 @@ class TextUtils {
          * @param {*} value
          * @returns {string|undefined}
          */
-    static toSHA1(value) {
+    static toSHA1(value: any): string {
 
         let cryptoModule = 'crypto';
         if (typeof window !== 'undefined') {
@@ -514,7 +514,7 @@ class TextUtils {
          * @param {*} value
          * @returns {string|undefined}
          */
-    static toSHA256(value) {
+    static toSHA256(value: any): string {
 
         let cryptoModule = 'crypto';
         if (typeof window !== 'undefined') {
@@ -542,11 +542,11 @@ class TextUtils {
          * @static
          * @returns {string}
          */
-    static newUUID() {
+    static newUUID(): string {
         let chars = UUID_CHARS;
         let uuid = [];
         // rfc4122, version 4 form
-        let r = void 0;
+        let r: any = void 0;
         // rfc4122 requires these characters
         uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
         uuid[14] = '4';
@@ -563,36 +563,35 @@ class TextUtils {
     }
 }
 
-let loggerProperty = Symbol('logger');
-
 /**
  * @class
  * @constructor
  */
 class TraceUtils {
+    private static _logger: TraceLogger;
     constructor() {
     }
-    static useLogger(logger) {
-        TraceUtils[loggerProperty] = logger;
+    static useLogger(logger: TraceLogger) {
+        TraceUtils._logger = logger;
     }
-    static level(level) {
-        TraceUtils[loggerProperty].level(level);
-    }
-    /**
-         * @static
-         * @param {...*} data
-         */
-    // eslint-disable-next-line no-unused-vars
-    static log(data) {
-        TraceUtils[loggerProperty].log.apply(TraceUtils[loggerProperty], Array.prototype.slice.call(arguments));
+    static level(level: string)  {
+        TraceUtils._logger.level(level);
     }
     /**
          * @static
          * @param {...*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static error(data) {
-        TraceUtils[loggerProperty].error.apply(TraceUtils[loggerProperty], Array.prototype.slice.call(arguments));
+    static log(...data: any[]) {
+        TraceUtils._logger.log.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    }
+    /**
+         * @static
+         * @param {...*} data
+         */
+    // eslint-disable-next-line no-unused-vars
+    static error(...data: any[]) {
+        TraceUtils._logger.error.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
     }
     /**
          *
@@ -600,17 +599,8 @@ class TraceUtils {
          * @param {...*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static info(data) {
-        TraceUtils[loggerProperty].info.apply(TraceUtils[loggerProperty], Array.prototype.slice.call(arguments));
-    }
-    /**
-         *
-         * @static
-         * @param {*} data
-         */
-    // eslint-disable-next-line no-unused-vars
-    static warn(data) {
-        TraceUtils[loggerProperty].warn.apply(TraceUtils[loggerProperty], Array.prototype.slice.call(arguments));
+    static info(...data: any[]) {
+        TraceUtils._logger.info.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
     }
     /**
          *
@@ -618,8 +608,17 @@ class TraceUtils {
          * @param {*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static verbose(data) {
-        TraceUtils[loggerProperty].verbose.apply(TraceUtils[loggerProperty], Array.prototype.slice.call(arguments));
+    static warn(...data: any[]) {
+        TraceUtils._logger.warn.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    }
+    /**
+         *
+         * @static
+         * @param {*} data
+         */
+    // eslint-disable-next-line no-unused-vars
+    static verbose(...data: any[]) {
+        TraceUtils._logger.verbose.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
     }
     /**
          *
@@ -627,8 +626,8 @@ class TraceUtils {
          * @param {...*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static debug(data) {
-        TraceUtils[loggerProperty].debug.apply(TraceUtils[loggerProperty], Array.prototype.slice.call(arguments));
+    static debug(...data: any[]) {
+        TraceUtils._logger.debug.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
     }
 }
 
@@ -640,7 +639,7 @@ class RandomUtils {
          * Returns a random string based on the length specified
          * @param {Number} length
          */
-    static randomChars(length) {
+    static randomChars(length?: number) {
         length = length || 8;
         let chars = 'abcdefghkmnopqursuvwxz2456789ABCDEFHJKLMNPQURSTUVWXYZ';
         let str = '';
@@ -654,7 +653,7 @@ class RandomUtils {
          * @param {number} min
          * @param {number} max
          */
-    static randomInt(min, max) {
+    static randomInt(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     /**
@@ -663,7 +662,7 @@ class RandomUtils {
          * @param {number} length
          * @returns {string}
          */
-    static randomHex(length) {
+    static randomHex(length?: number): string {
         length = (length || 8) * 2;
         let str = '';
         for (let i = 0; i < length; i++) {
@@ -683,7 +682,7 @@ class NumberUtils {
          * @param {string} s A base-26 formatted string e.g. aaaaaaaa for 0, baaaaaaa for 1 etc
          * @return {number} The equivalent integer value
          */
-    static fromBase26(s) {
+    static fromBase26(s: string): number {
         let num = 0;
         if (!/[a-z]{8}/.test(s)) {
             throw new Error('Invalid base-26 format.');
@@ -700,7 +699,7 @@ class NumberUtils {
          * @param {number} x The integer to be converted
          * @return {string} The equivalent string value
          */
-    static toBase26(x) {
+    static toBase26(x: any): string {
         //noinspection ES6ConvertVarToLetConst
         let num = parseInt(x);
         if (num < 0) {
@@ -731,14 +730,14 @@ class PathUtils {
      * @returns {string}
      */
     // eslint-disable-next-line no-unused-vars
-    static join(part) {
+    static join(...part: string[]) {
         let pathModule = 'path';
         if (isNode) {
             let path = require(pathModule);
             return path.join.apply(null, Array.prototype.slice.call(arguments));
         }
         // Split the inputs into a list of path commands.
-        let parts = [], i, l;
+        let parts: string[] = [], i, l;
         for (i = 0, l = arguments.length; i < l; i++) {
             parts = parts.concat(arguments[i].split('/'));
         }
@@ -781,7 +780,16 @@ let FgWhite = '\x1b[37m';
 
 let Bold = '\x1b[1m';
 
-let LogLevels = {
+declare interface LogLevelIndexer {
+    [key: string]: number;
+    error: number;
+    warn: number;
+    info: number;
+    verbose: number;
+    debug: number;
+}
+
+let LogLevels: LogLevelIndexer = {
     error: 0,
     warn: 1,
     info: 2,
@@ -811,7 +819,7 @@ function timestamp() {
  * @param level
  * @param err
  */
-function writeError(level, err) {
+function writeError(level: string, err: any) {
 
     let keys = Object.keys(err).filter(function(x) {
         return Object.prototype.hasOwnProperty.call(err, x) && x!=='message' && typeof err[x] !== 'undefined' && err[x] != null;
@@ -835,7 +843,8 @@ function writeError(level, err) {
 }
 
 class TraceLogger {
-    constructor(options) {
+    options: { colors: boolean; level: string; };
+    constructor(options?: { colors: boolean, level: string }) {
         this.options = {
             colors: false,
             level: 'info'
@@ -855,7 +864,7 @@ class TraceLogger {
      * @param {string} level
      * @returns {*}
      */
-    level(level) {
+    level(level: string): this {
         Args.check(Object.prototype.hasOwnProperty.call(LogLevels, level), 'Invalid logging level. Expected error, warn, info, verbose or debug.');
         this.options.level = level;
         return this;
@@ -864,7 +873,7 @@ class TraceLogger {
      * @param {...*} data
      */
     // eslint-disable-next-line no-unused-vars
-    log(data) {
+    log(...data: any[]) {
         let args = Array.prototype.slice.call(arguments);
         if (typeof data === 'undefined' || data === null) {
             return;
@@ -884,7 +893,7 @@ class TraceLogger {
      * @param {...*} data
      */
     // eslint-disable-next-line no-unused-vars
-    info(data) {
+    info(...data: any[]) {
         let args = Array.prototype.slice.call(arguments);
         if (typeof data === 'undefined' || data === null) {
             return;
@@ -904,7 +913,7 @@ class TraceLogger {
      * @param {...*} data
      */
     // eslint-disable-next-line no-unused-vars
-    error(data) {
+    error(...data: any[]) {
         let args = Array.prototype.slice.call(arguments);
         if (typeof data === 'undefined' || data === null) {
             return;
@@ -924,7 +933,7 @@ class TraceLogger {
      * @param {...*} data
      */
     // eslint-disable-next-line no-unused-vars
-    warn(data) {
+    warn(...data: any[]) {
         let args = Array.prototype.slice.call(arguments);
         if (typeof data === 'undefined' || data === null) {
             return;
@@ -944,7 +953,7 @@ class TraceLogger {
      * @param {...*} data
      */
     // eslint-disable-next-line no-unused-vars
-    verbose(data) {
+    verbose(...data: any[]) {
         let args = Array.prototype.slice.call(arguments);
         if (typeof data === 'undefined' || data === null) {
             return;
@@ -964,7 +973,7 @@ class TraceLogger {
      * @param {...*} data
      */
     // eslint-disable-next-line no-unused-vars
-    debug(data) {
+    debug(...data: any[]) {
         let args = Array.prototype.slice.call(arguments);
         if (typeof data === 'undefined' || data === null) {
             return;
@@ -981,13 +990,13 @@ class TraceLogger {
         this.write('debug', data);
 
     }
-    write(level, text) {
+    write(level: string, text: string) {
         if (LogLevels[level] > LogLevels[this.options.level]) {
             return;
         }
         if (this.options.colors) {
             // eslint-disable-next-line no-console
-            console.log(LogLevelColors[level] + timestamp() + ' [' + level.toUpperCase() + '] ' + text, Reset);
+            console.log(LogLevels[level] + timestamp() + ' [' + level.toUpperCase() + '] ' + text, Reset);
         } else {
             // eslint-disable-next-line no-console
             console.log(timestamp() + ' [' + level.toUpperCase() + '] ' + text);
@@ -995,10 +1004,10 @@ class TraceLogger {
     }
 }
 
-TraceUtils[loggerProperty] = new TraceLogger();
+TraceUtils.useLogger(new TraceLogger());
 
 class Base26Number {
-    constructor(value) {
+    constructor(value: any) {
         let thisValue = value;
         this.toString = function () {
             return Base26Number.toBase26(thisValue);
@@ -1009,7 +1018,7 @@ class Base26Number {
      * @param {number} x
      * @returns {string}
      */
-    static toBase26(x) {
+    static toBase26(x: number): string {
         let num = Math.floor(x | 0);
         if (num < 0) {
             throw new Error('A non-positive integer cannot be converted to base-26 format.');
@@ -1032,7 +1041,7 @@ class Base26Number {
      * @param {string} s
      * @returns {number}
      */
-    static fromBase26(s) {
+    static fromBase26(s: string): number {
         let num = 0;
         if (!/[a-z]{8}/.test(s)) {
             throw new Error('Invalid base-26 format.');
@@ -1045,32 +1054,31 @@ class Base26Number {
     }
 }
 
-let valueProperty = Symbol('value');
-
 class Guid {
-    constructor(value) {
+    private _value: string;
+    constructor(value?: string) {
         if (typeof value === 'string') {
             let test = value.replace(/^{/, '').replace(/{$/, '');
             Args.check(GuidRegex.test(test), 'Value must be a valid UUID');
-            this[valueProperty] = test;
+            this._value = test;
             return;
         }
-        this[valueProperty] = TextUtils.newUUID();
+        this._value = TextUtils.newUUID();
     }
     toJSON() {
-        return this[valueProperty];
+        return this._value;
     }
     valueOf() {
-        return this[valueProperty];
+        return this._value;
     }
     toString() {
-        return this[valueProperty];
+        return this._value;
     }
     /**
      * @param {string|*} s
      * @returns {boolean}
      */
-    static isGuid(s) {
+    static isGuid(s: any): boolean {
         if (s instanceof Guid) {
             return true;
         }
@@ -1082,7 +1090,7 @@ class Guid {
     /**
      * @returns {Guid}
      */
-    static newGuid() {
+    static newGuid(): Guid {
         return new Guid();
     }
 }
@@ -1094,7 +1102,8 @@ class Guid {
  * @extends TypeError
  */
 class ArgumentError extends TypeError {
-    constructor(msg, code) {
+    code: string;
+    constructor(msg: string, code?: string) {
         super(msg);
         this.message = msg;
         this.code = code || 'EARG';

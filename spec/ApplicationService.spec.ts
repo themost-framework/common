@@ -7,7 +7,8 @@ class SampleService extends ApplicationService {
 }
 
 class SampleApplication implements ApplicationBase {
-    configuration: ConfigurationBase;    useStrategy(serviceCtor: ApplicationServiceConstructor<any>, strategyCtor: ApplicationServiceConstructor<any>): this {
+    configuration: ConfigurationBase;
+    useStrategy(serviceCtor: ApplicationServiceConstructor<any>, strategyCtor: ApplicationServiceConstructor<any>): this {
         throw new Error('Method not implemented.');
     }
     useService(serviceCtor: ApplicationServiceConstructor<any>): this {
