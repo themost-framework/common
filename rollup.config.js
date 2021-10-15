@@ -1,37 +1,46 @@
-var rollupResolve = require('rollup-plugin-node-resolve');
-var rollupCommon = require('rollup-plugin-commonjs');
-var autoExternal = require('rollup-plugin-auto-external');
-var dts = require('rollup-plugin-dts').default;
-
-var dist = './dist/';
-var name = 'index.js';
-
+// eslint-disable-next-line no-unused-vars
+const dts = require('rollup-plugin-dts').default;
+const babel = require('@rollup/plugin-babel').default;
+const pkg = require('./package.json');
 module.exports = [{
     input: './src/index.js',
     output: [
         {
-            file: dist + name + '.cjs.js',
-            format: 'cjs'
+            name: '@themost/common',
+            file: 'dist/index.cjs.js',
+            format: 'cjs',
+            sourcemap: true
         },
         {
-            file: dist + name + '.esm.js',
-            format: 'esm'
+            name: '@themost/common',
+            file: 'dist/index.esm.js',
+            format: 'esm',
+            sourcemap: true
         },
         {
-            name: '@themost/xml',
-            file: dist + name + '.js',
-            format: 'umd'
-        }
+            name: '@themost/common',
+            file: 'dist/index.umd.js',
+            format: 'umd',
+            sourcemap: true
+        },
     ],
+    external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)).concat(
+        'lodash/repeat',
+        'lodash/escape'
+    ),
     plugins: [
-        rollupResolve(),
-        rollupCommon(),
-        autoExternal()
+        babel({
+            babelHelpers: 'runtime'
+        })
     ]
 }, {
     input: './src/index.d.ts',
-    output: [ { file: dist + name + '.d.ts', format: 'es' } ],
+    output: [{
+        file: 'dist/index.d.ts'
+    }],
     plugins: [
         dts()
     ],
+    external: Object.keys(pkg.dependencies)
+        .concat(Object.keys(pkg.peerDependencies))
 }];
