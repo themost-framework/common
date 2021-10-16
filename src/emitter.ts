@@ -3,6 +3,10 @@
 import { EventEmitter } from 'events';
 import { applyEachSeries } from 'async';
 
+declare interface FiredListener {
+    fired: boolean;
+}
+
 /**
  * Wraps an async listener and returns a callback-like function
  * @param {function(...*):Promise<void>} asyncListener
@@ -27,6 +31,32 @@ function wrapAsyncListener(asyncListener: (...arg: any) => Promise<void>) {
         configurable: true,
         enumerable: true,
         value: asyncListener
+    });
+    return result;
+}
+
+function wrapOnceListener(listener: (...arg: any[]) => void) {
+    /**
+     * @this SequentialEventEmitter
+     */
+    let result = function() {
+        // get arguments without callback
+        let args = Array.from(arguments);
+        // get callback
+        let callback = args.pop();
+        args.push((err?: Error) => {
+            Object.assign(listener, {
+                fired: true
+            });
+            return callback(err);
+        });
+        return listener.apply(this, args);
+    }
+    // set async listener property in order to have an option to unsubscribe
+    Object.defineProperty(result, '_listener', {
+        configurable: true,
+        enumerable: true,
+        value: listener
     });
     return result;
 }
@@ -87,7 +117,7 @@ class SequentialEventEmitter extends EventEmitter {
         if (typeof this.listeners !== 'function') {
             throw new Error('undefined listeners');
         }
-        let listeners = this.listeners(event);
+        let listeners: any = this.listeners(event);
 
         let argsAndCallback = [].concat(Array.prototype.slice.call(arguments, 1));
         if (argsAndCallback.length > 0) {
@@ -97,13 +127,21 @@ class SequentialEventEmitter extends EventEmitter {
             }
         }
         //get callback function (the last argument of arguments list)
-        let callback = argsAndCallback[argsAndCallback.length - 1];
+        let callback = argsAndCallback.pop();
 
         //validate listeners
         if (listeners.length === 0) {
             //exit emitter
             return callback();
         }
+        argsAndCallback.push((err?: Error) => {
+            for(let listener of listeners) {
+                if (listener._listener && listener._listener.fired) {
+                    this.removeListener(event, listener);
+                }
+            }
+            return callback(err);
+        });
         //apply each series
         return applyEachSeries.apply(this, [listeners].concat(argsAndCallback));
     }
@@ -149,7 +187,8 @@ class SequentialEventEmitter extends EventEmitter {
      * @param {function(...*):Promise<void>} asyncListener
      */
     subscribeOnce(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this {
-        return this.once(event, wrapOnceAsyncListener(event, asyncListener));
+        const wrapListener = wrapAsyncListener(asyncListener);
+        return this.once(event, wrapListener);
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -177,7 +216,9 @@ class SequentialEventEmitter extends EventEmitter {
             // emit event
             self.emit.apply(self, argsAndCallback);
         });
-
+    }
+    once(event: string | symbol, listener: (...args: any[]) => void): this {
+        return this.on(event, wrapOnceListener(listener));
     }
 }
 

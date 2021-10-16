@@ -36,6 +36,6 @@ describe('ApplicationService', () => {
         expect(()=> {
             //@ts-ignore-next-line
             service.application = app;
-        }).toThrowError('Cannot assign to read only property \'application\' of object \'#<SampleService>\'');
+        }).toThrowError();
     });
 });
