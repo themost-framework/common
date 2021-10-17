@@ -83,6 +83,9 @@ class HtmlWriter {
      * @returns {HtmlWriter}
      */
     writeBeginTag(tag: string): this {
+        if (this.bufferedTags.length) {
+            this.writeAttributesAndCloseTag();
+        }
         //write <TAG
         if (this.indent) {
             //this.buffer += '\n';
@@ -90,6 +93,10 @@ class HtmlWriter {
         }
         this.buffer += HTML_START_TAG_STRING.replace(/%0/, tag);
         this.bufferedTags.push(tag);
+        return this;
+    }
+
+    private writeAttributesAndCloseTag() {
         if (this.bufferedAttributes.length > 0) {
             let s = '';
             this.bufferedAttributes.forEach(function (attr) {
@@ -103,6 +110,7 @@ class HtmlWriter {
         this.buffer += HTML_END_CHAR;
         return this;
     }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * Writes a full begin HTML tag (e.g <div/>).
@@ -116,16 +124,6 @@ class HtmlWriter {
             this.buffer += repeat('\t', this.bufferedTags.length);
         }
         this.buffer += HTML_START_TAG_STRING.replace(/%0/, tag);
-        if (this.bufferedAttributes.length > 0) {
-            let s = '';
-            this.bufferedAttributes.forEach(function (attr) {
-                //write attribute='value'
-                s += HTML_SPACE_CHAR;
-                s += HTML_ATTR_STRING.replace(/%0/, attr.name).replace(/%1/, escape(attr.value));
-            });
-            this.buffer += s;
-        }
-        this.bufferedAttributes.splice(0, this.bufferedAttributes.length);
         this.buffer += HTML_FULL_END_STRING;
         return this;
     }
@@ -134,7 +132,7 @@ class HtmlWriter {
      * Writes an end HTML tag (e.g </div>) based on the current buffered tags.
      * @returns {HtmlWriter}
      */
-    writeEndTag(): this {
+    writeEndTag(tag: string): this {
         let tagsLength = this.bufferedTags ? this.bufferedTags.length : 0;
         if (tagsLength === 0) {
             return this;
@@ -143,7 +141,10 @@ class HtmlWriter {
             this.buffer += '\n';
             this.buffer += repeat('\t', tagsLength - 1);
         }
-        this.buffer += HTML_END_TAG_STRING.replace(/%0/, this.bufferedTags[tagsLength - 1]);
+        // write attributes and close tag
+        this.writeAttributesAndCloseTag();
+
+        this.buffer += HTML_END_TAG_STRING.replace(/%0/, tag);
         this.bufferedTags.splice(tagsLength - 1, 1);
         return this;
     }
