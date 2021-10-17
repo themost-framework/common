@@ -1,7 +1,6 @@
 // MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
 
 const isNode = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
-import { sprintf } from 'sprintf';
 
 const UUID_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const HEX_CHARS = 'abcdef1234567890';
@@ -16,6 +15,10 @@ const UndefinedRegex = /^undefined$/ig;
 const IntegerRegex =/^[-+]?\d+$/g;
 const FloatRegex =/^[+-]?\d+(\.\d+)?$/g;
 const GuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+declare interface PropertyIndexer {
+    [key: string]: any;
+}
 
 /**
  * @class
@@ -577,39 +580,33 @@ class TraceUtils {
     static level(level: string)  {
         TraceUtils._logger.level(level);
     }
-    /**
-         * @static
-         * @param {...*} data
-         */
-    // eslint-disable-next-line no-unused-vars
-    static log(...data: any[]) {
-        TraceUtils._logger.log.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    static format(format: string)  {
+        TraceUtils._logger.options.format = format;
     }
     /**
          * @static
          * @param {...*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static error(...data: any[]) {
-        TraceUtils._logger.error.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    static log(...args: any) {
+        TraceUtils._logger.log.apply(TraceUtils._logger, args);
     }
     /**
-         *
          * @static
          * @param {...*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static info(...data: any[]) {
-        TraceUtils._logger.info.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    static error(...args: any) {
+        TraceUtils._logger.error.apply(TraceUtils._logger, args);
     }
     /**
          *
          * @static
-         * @param {*} data
+         * @param {...*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static warn(...data: any[]) {
-        TraceUtils._logger.warn.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    static info(...args: any) {
+        TraceUtils._logger.info.apply(TraceUtils._logger, args);
     }
     /**
          *
@@ -617,8 +614,17 @@ class TraceUtils {
          * @param {*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static verbose(...data: any[]) {
-        TraceUtils._logger.verbose.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    static warn(...args: any) {
+        TraceUtils._logger.warn.apply(TraceUtils._logger, args);
+    }
+    /**
+         *
+         * @static
+         * @param {*} data
+         */
+    // eslint-disable-next-line no-unused-vars
+    static verbose(...args: any) {
+        TraceUtils._logger.verbose.apply(TraceUtils._logger, args);
     }
     /**
          *
@@ -626,8 +632,8 @@ class TraceUtils {
          * @param {...*} data
          */
     // eslint-disable-next-line no-unused-vars
-    static debug(...data: any[]) {
-        TraceUtils._logger.debug.apply(TraceUtils._logger, Array.prototype.slice.call(arguments));
+    static debug(...args: any) {
+        TraceUtils._logger.debug.apply(TraceUtils._logger, args);
     }
 }
 
@@ -805,60 +811,45 @@ let LogLevelColors = {
     debug: Bold + FgGreen
 };
 
+function zeroPad(number: number, length: number) {
+    number = number || 0;
+    let res = number.toString();
+    while (res.length < length) {
+        res = '0' + res;
+    }
+    return res;
+}
+
 /**
  * @private
  * @returns {string}
  */
-function timestamp() {
-    return (new Date()).toUTCString();
-}
-
-/**
- * @private
- * @this TraceLogger
- * @param level
- * @param err
- */
-function writeError(level: string, err: any) {
-
-    let keys = Object.keys(err).filter(function(x) {
-        return Object.prototype.hasOwnProperty.call(err, x) && x!=='message' && typeof err[x] !== 'undefined' && err[x] != null;
-    });
-    if (err instanceof Error) {
-        if (Object.prototype.hasOwnProperty.call(err, 'stack')) {
-            this.write(level, err.stack);
-        }
-        else {
-            this.write(level, err.toString());
-        }
-    }
-    else {
-        this.write(level, err.toString());
-    }
-    if (keys.length>0) {
-        this.write(level, 'Error: ' + keys.map(function(x) {
-            return '[' + x + ']=' + err[x].toString()
-        }).join(', '));
-    }
+function timestamp(): string {
+    const val = new Date();
+    const yyyy = val.getFullYear();
+    const MM = zeroPad(val.getMonth() + 1, 2);
+    const DD = zeroPad(val.getDate(), 2);
+    const HH = zeroPad(val.getHours(), 2);
+    const mm = zeroPad(val.getMinutes(), 2);
+    const ss = zeroPad(val.getSeconds(), 2);
+    //format timezone
+    const offset = val.getTimezoneOffset()
+    const Z = (offset <= 0 ? '+' : '-') + zeroPad(-Math.floor(offset / 60), 2) + ':' + zeroPad(offset % 60, 2);
+    return `${yyyy}-${MM}-${DD}T${HH}:${mm}:${ss}${Z}`;
 }
 
 class TraceLogger {
-    options: { colors: boolean; level: string; };
-    constructor(options?: { colors: boolean, level: string }) {
-        this.options = {
+    options: { colors: boolean; level: string; format?: string; } | any;
+    constructor(options?: { colors: boolean, level: string, format?: string } | any) {
+        this.options = Object.assign({
             colors: false,
-            level: 'info'
-        };
-        if (typeof options === 'undefined' && options !== null && isNode) {
-            if (isNode && process.env.NODE_ENV === 'development') {
-                this.options.level = 'debug';
-            }
+            level: 'info',
+            format: 'raw'
+        }, options);
+        if (isNode && process.env.NODE_ENV === 'development') {
+            this.options.level = 'debug';
         }
-        if (typeof options !== 'undefined' && options !== null) {
-            this.options = options;
-            //validate logging level
-            Args.check(Object.prototype.hasOwnProperty.call(LogLevels, this.options.level), 'Invalid logging level. Expected error, warn, info, verbose or debug.');
-        }
+        Args.check(Object.prototype.hasOwnProperty.call(LogLevels, this.options.level), 'Invalid logging level. Expected error, warn, info, verbose or debug.');
     }
     /**
      * @param {string} level
@@ -870,137 +861,85 @@ class TraceLogger {
         return this;
     }
     /**
-     * @param {...*} data
+     * @param {...*} args
      */
-    // eslint-disable-next-line no-unused-vars
-    log(...data: any[]) {
-        let args = Array.prototype.slice.call(arguments);
-        if (typeof data === 'undefined' || data === null) {
-            return;
-        }
-        if (data instanceof Error) {
-            return writeError.bind(this)('info', data);
-        }
-        if (typeof data !== 'string') {
-            return this.write('info', data.toString());
-        }
-        if (args.length > 1) {
-            return this.write('info', sprintf.apply(null, args));
-        }
-        this.write('info', data);
+    log(...args: any) {
+        return this.write.apply(this, ['info'].concat(args));
+    }
+    /**
+     * @param {...*} args
+     */
+    info(...args: any) {
+        return this.write.apply(this, ['info'].concat(args));
+    }
+    /**
+     * @param {...*} args
+     */
+    error(...args: any) {
+        return this.write.apply(this, ['error'].concat(args));
+    }
+    /**
+     * @param {...*} args
+     */
+    warn(...args: any) {
+        return this.write.apply(this, ['warn'].concat(args));
+    }
+    /**
+     * @param {...*} args
+     */
+    verbose(...args: any) {
+        return this.write.apply(this, ['verbose'].concat(args));
     }
     /**
      * @param {...*} data
      */
-    // eslint-disable-next-line no-unused-vars
-    info(...data: any[]) {
-        let args = Array.prototype.slice.call(arguments);
-        if (typeof data === 'undefined' || data === null) {
-            return;
-        }
-        if (data instanceof Error) {
-            return writeError.bind(this)('info', data);
-        }
-        if (typeof data !== 'string') {
-            return this.write('info', data.toString());
-        }
-        if (args.length > 1) {
-            return this.write('info', sprintf.apply(null, args));
-        }
-        this.write('info', data);
+    debug(...args: any) {
+        return this.write.apply(this, ['debug'].concat(args));
     }
-    /**
-     * @param {...*} data
-     */
-    // eslint-disable-next-line no-unused-vars
-    error(...data: any[]) {
-        let args = Array.prototype.slice.call(arguments);
-        if (typeof data === 'undefined' || data === null) {
-            return;
-        }
-        if (data instanceof Error) {
-            return writeError.bind(this)('error', data);
-        }
-        if (typeof data !== 'string') {
-            return this.write('error', data.toString());
-        }
-        if (args.length > 1) {
-            return this.write('error', sprintf.apply(null, args));
-        }
-        this.write('error', data);
-    }
-    /**
-     * @param {...*} data
-     */
-    // eslint-disable-next-line no-unused-vars
-    warn(...data: any[]) {
-        let args = Array.prototype.slice.call(arguments);
-        if (typeof data === 'undefined' || data === null) {
-            return;
-        }
-        if (data instanceof Error) {
-            return writeError.bind(this)('warn', data);
-        }
-        if (typeof data !== 'string') {
-            return this.write('warn', data.toString());
-        }
-        if (args.length > 1) {
-            return this.write('warn', sprintf.apply(null, args));
-        }
-        this.write('warn', data);
-    }
-    /**
-     * @param {...*} data
-     */
-    // eslint-disable-next-line no-unused-vars
-    verbose(...data: any[]) {
-        let args = Array.prototype.slice.call(arguments);
-        if (typeof data === 'undefined' || data === null) {
-            return;
-        }
-        if (data instanceof Error) {
-            return writeError.bind(this)('verbose', data);
-        }
-        if (typeof data !== 'string') {
-            return this.write('verbose', data.toString());
-        }
-        if (args.length > 1) {
-            return this.write('verbose', sprintf.apply(null, args));
-        }
-        this.write('verbose', data);
-    }
-    /**
-     * @param {...*} data
-     */
-    // eslint-disable-next-line no-unused-vars
-    debug(...data: any[]) {
-        let args = Array.prototype.slice.call(arguments);
-        if (typeof data === 'undefined' || data === null) {
-            return;
-        }
-        if (data instanceof Error) {
-            return writeError.bind(this)('debug', data);
-        }
-        if (typeof data !== 'string') {
-            return this.write('debug', data.toString());
-        }
-        if (args.length > 1) {
-            return this.write('debug', sprintf.apply(null, args));
-        }
-        this.write('debug', data);
-
-    }
-    write(level: string, text: string) {
+    write(level: string, ...args: any) {
         if (LogLevels[level] > LogLevels[this.options.level]) {
             return;
         }
-        if (this.options.colors) {
-            // eslint-disable-next-line no-console
-            console.log(LogLevels[level] + timestamp() + ' [' + level.toUpperCase() + '] ' + text, Reset);
-        } else {
-            // eslint-disable-next-line no-console
-            console.log(timestamp() + ' [' + level.toUpperCase() + '] ' + text);
+        const log = (level === 'error')
+            ? console.error
+            : console.log
+        if (this.options.format === 'json') {
+            return log.call(console, JSON.stringify([
+                timestamp(),
+                level.toUpperCase()
+            ].concat(args), (key, value: any) => {
+                if (value instanceof Error) {
+                    const error = (value as PropertyIndexer);
+                    const result = Object.keys(error).reduce((obj, key) => {
+                        Object.defineProperty(obj, key, {
+                            enumerable: true,
+                            configurable: true,
+                            writable: true,
+                            value: error[key]
+                        });
+                        return obj;
+                    }, {
+                        message: value.message,
+                        type: value.constructor.name,
+                    });
+                    Object.assign(result, {
+                        stack: value.stack
+                    });
+                    return result;
+                }
+                return value;
+            }));
         }
+        log.apply(console, [
+            timestamp(),
+            '[' + level.toUpperCase() + ']'
+        ].concat(args).map((arg0: any) => {
+            // log error stacktrace
+            if (level === 'error' && arg0 instanceof Error && Object.prototype.hasOwnProperty.call(arg0, 'stack')) {
+                return arg0.stack;
+            }
+            return String(arg0);
+        }));
     }
 }
 

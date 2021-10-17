@@ -187,8 +187,7 @@ class SequentialEventEmitter extends EventEmitter {
      * @param {function(...*):Promise<void>} asyncListener
      */
     subscribeOnce(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this {
-        const wrapListener = wrapAsyncListener(asyncListener);
-        return this.once(event, wrapListener);
+        return this.once(event,  wrapAsyncListener(asyncListener));
     }
     // noinspection JSUnusedGlobalSymbols
     /**

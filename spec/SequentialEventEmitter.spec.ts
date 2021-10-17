@@ -35,20 +35,15 @@ describe('SequentialEventEmitter', () => {
         emitter.unsubscribe('before.action', listener)
         expect(emitter.listenerCount('before.action')).toBe(0);
 
-        emitter.subscribeOnce('before.action', listener);
-        expect(emitter.listenerCount('before.action')).toBe(1);
-        emitter.unsubscribe('before.action', listener)
-        expect(emitter.listenerCount('before.action')).toBe(0);
-
     });
 
-    fit('should use SequentialEventEmitter.on()', async ()=> {
+    it('should use SequentialEventEmitter.on()', async ()=> {
         const emitter = new SequentialEventEmitter();
         emitter.on('before.action', function(ev, callback) {
             ev.value += 2;
             return callback();
         });
-        emitter.on('before.action', function(ev, callback) {
+        emitter.once('before.action', function(ev, callback) {
             ev.value += 2;
             return callback();
         });
@@ -64,75 +59,31 @@ describe('SequentialEventEmitter', () => {
             });
         });
         let listenerCount = emitter.listenerCount('before.action');
-        expect(listenerCount).toBe(2);
+        expect(listenerCount).toBe(1);
         expect(eventArgs.value).toBe(4);
         emitter.removeAllListeners('before.action');
         listenerCount = emitter.listenerCount('before.action');
         expect(listenerCount).toBe(0);
-
-        eventArgs.value = 0;
-        emitter.once('before.action', function(ev, callback) {
-            ev.value += 2;
-            return callback();
-        });
-        await new Promise<void>((resolve, reject) => {
-            emitter.emit('before.action', eventArgs, function(err: Error) {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve();
-            });
-        });
-        expect(eventArgs.value).toBe(2);
-        listenerCount = emitter.listenerCount('before.action');
-        expect(listenerCount).toBe(0);
-        // emit again
-        await new Promise<void>((resolve, reject) => {
-            emitter.emit('before.action', eventArgs, function(err: Error) {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve();
-            });
-        });
-        expect(eventArgs.value).toBe(2);
     });
 
     it('should use SequentialEventEmitter.subscribeOnce()', async ()=> {
         const emitter = new SequentialEventEmitter();
         emitter.subscribe('before.action', async (event: { value: number }) => {
-            event.value += 1;
+            event.value += 2;
         });
         emitter.subscribeOnce('before.action', async (event: { value: number }) => {
-            event.value += 1;
+            event.value += 2;
         });
         let eventArgs = {
-            value: 100
+            value: 0
         }
-        emitter.once('before.action', function(ev, callback) {
-            ev.value += 1;
-            return callback();
-        });
         await emitter.next('before.action', eventArgs);
-        expect(eventArgs.value).toBe(103);
+        expect(eventArgs.value).toBe(4);
         let listenerCount = emitter.listeners('before.action').length;
         expect(listenerCount).toBe(1);
         await emitter.next('before.action', eventArgs);
-        expect(eventArgs.value).toBe(103);
-        emitter.removeAllListeners('before.action');
-        // // reset
-        // eventArgs = {
-        //     value: 100
-        // };
-        // emitter.subscribeOnce('before.action', (event: { value: number }) => {
-        //     event.value += 5;
-        //     return Promise.resolve();
-        // });
-        // let listenerCount = emitter.listenerCount('before.action');
-        // expect(listenerCount).toBe(1);
-        // await emitter.next('before.action', eventArgs);
-        // expect(eventArgs.value).toBe(105);
-        expect(emitter.listenerCount('before.action')).toBe(0);
+        expect(eventArgs.value).toBe(6);
+        
     });
 
 });
