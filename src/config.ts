@@ -1,6 +1,6 @@
 // MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
 
-let _ = require('lodash');
+import { at as _at, set as _set} from 'lodash';
 import { Args, TraceUtils, PathUtils } from './utils';
 import { AbstractClassError } from './errors';
 
@@ -109,7 +109,7 @@ class ConfigurationBase {
      * @returns {Object|Array}
      */
     getSourceAt(p: string): any {
-        return _.at(this._config, p.replace(/\//g, '.'))[0];
+        return _at(this._config, p.replace(/\//g, '.'))[0];
     }
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -118,7 +118,7 @@ class ConfigurationBase {
      * @returns {boolean}
      */
     hasSourceAt(p: string): boolean {
-        return _.isObject(_.at(this._config, p.replace(/\//g, '.'))[0]);
+        return _at(this._config, p.replace(/\//g, '.'))[0] != null;
     }
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -128,7 +128,7 @@ class ConfigurationBase {
      * @returns {Object}
      */
     setSourceAt(p: string, value: any): void {
-        return _.set(this._config, p.replace(/\//g, '.'), value);
+        return _set(this._config, p.replace(/\//g, '.'), value);
     }
     //noinspection JSUnusedGlobalSymbols
     /**
