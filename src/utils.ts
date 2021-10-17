@@ -1,5 +1,5 @@
 // MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
-
+import { MD5, SHA1, SHA256 } from "crypto-js";
 const isNode = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
 
 const UUID_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -448,39 +448,13 @@ class TextUtils {
          * @returns {string|undefined}
          */
     static toMD5(value: any): string {
-
-        if (typeof value === 'undefined' || value === null) {
+        if (value == null) {
             return;
         }
-        //browser implementation
-        let md5, md5module;
-        if (typeof window !== 'undefined') {
-            md5module = 'blueimp-md5';
-            md5 = require(md5module);
-            if (typeof value === 'string') {
-                return md5(value);
-            }
-            else if (value instanceof Date) {
-                return md5(value.toUTCString());
-            }
-            else {
-                return md5(JSON.stringify(value));
-            }
-        }
-        //node.js implementation
-        md5module = 'crypto';
-        let crypto = require(md5module);
-        md5 = crypto.createHash('md5');
         if (typeof value === 'string') {
-            md5.update(value);
+            return MD5(value).toString();
         }
-        else if (value instanceof Date) {
-            md5.update(value.toUTCString());
-        }
-        else {
-            md5.update(JSON.stringify(value));
-        }
-        return md5.digest('hex');
+        return MD5(JSON.stringify(value)).toString();
     }
     /**
          * Converts the given parameter to SHA1 hex string
@@ -489,27 +463,13 @@ class TextUtils {
          * @returns {string|undefined}
          */
     static toSHA1(value: any): string {
-
-        let cryptoModule = 'crypto';
-        if (typeof window !== 'undefined') {
-            throw new Error('This method is not implemented for this environment');
-        }
-
-        let crypto = require(cryptoModule);
-        if (typeof value === 'undefined' || value === null) {
+        if (value == null) {
             return;
         }
-        let sha1 = crypto.createHash('sha1');
         if (typeof value === 'string') {
-            sha1.update(value);
+            return SHA1(value).toString();
         }
-        else if (value instanceof Date) {
-            sha1.update(value.toUTCString());
-        }
-        else {
-            sha1.update(JSON.stringify(value));
-        }
-        return sha1.digest('hex');
+        return SHA1(JSON.stringify(value)).toString();
     }
     /**
          * Converts the given parameter to SHA256 hex string
@@ -518,27 +478,13 @@ class TextUtils {
          * @returns {string|undefined}
          */
     static toSHA256(value: any): string {
-
-        let cryptoModule = 'crypto';
-        if (typeof window !== 'undefined') {
-            throw new Error('This method is not implemented for this environment');
-        }
-
-        let crypto = require(cryptoModule);
-        if (typeof value === 'undefined' || value === null) {
+        if (value == null) {
             return;
         }
-        let sha256 = crypto.createHash('sha256');
         if (typeof value === 'string') {
-            sha256.update(value);
+            return SHA256(value).toString();
         }
-        else if (value instanceof Date) {
-            sha256.update(value.toUTCString());
-        }
-        else {
-            sha256.update(JSON.stringify(value));
-        }
-        return sha256.digest('hex');
+        return SHA256(JSON.stringify(value)).toString();
     }
     /**
          * Returns a random GUID/UUID string
