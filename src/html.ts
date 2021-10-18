@@ -1,6 +1,8 @@
 // MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
 
-import { escape, repeat } from 'lodash';
+import { escape } from 'lodash';
+import * as prettier from 'prettier';
+import * as htmlParser from 'prettier/parser-html';
 const HTML_START_CHAR = '<';
 const HTML_END_CHAR = '>';
 const HTML_FULL_END_STRING = ' />';
@@ -9,26 +11,26 @@ const HTML_ATTR_STRING = '%0="%1"';
 const HTML_START_TAG_STRING = '<%0';
 const HTML_END_TAG_STRING = '</%0>';
 
-declare interface PropertyIndexer {
+export declare interface HtmlAttributeIndexer {
     [key: string]: any;
 }
 
 class HtmlWriter {
     bufferedAttributes: any[];
+    private bufferedTags: string[] = [];
     buffer: string;
     indent: boolean;
-    bufferedTags: any[];
+
+    public static readonly TagRightChar = HTML_END_CHAR;
+    public static readonly TagLeftChar = HTML_START_CHAR;
+    public static readonly SelfClosingChars = HTML_FULL_END_STRING;
+
     constructor() {
         /**
          * @private
          * @type {Array}
          */
         this.bufferedAttributes = [];
-        /**
-         * @private
-         * @type {Array}
-         */
-        this.bufferedTags = [];
         /**
          * @private
          * @type {String}
@@ -40,39 +42,57 @@ class HtmlWriter {
          */
         this.indent = true;
     }
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Writes an attribute to an array of attributes that is going to be used in writeBeginTag function
      * @param {String} name - The name of the HTML attribute
      * @param {String} value - The value of the HTML attribute
      * @returns {HtmlWriter}
      */
-    writeAttribute(name: string, value: string): this {
+    writeAttribute(name: string, value: any): this {
+        //write attribute='value'
+        this.buffer += HTML_SPACE_CHAR;
+        this.buffer += HTML_ATTR_STRING.replace(/%0/, name).replace(/%1/, escape(value));
+        return this;
+    }
+    /**
+     * Writes an array of attributes to the output buffer. This attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
+     * @param {HtmlAttributeIndexer} attributes - An object which represents an array of attributes
+     * @returns {HtmlWriter}
+     */
+     writeAttributes(attributes: HtmlAttributeIndexer): this {
+        if (attributes === null) {
+            return this;
+        }
+        for (let prop in attributes) {
+            if (Object.prototype.hasOwnProperty.call(attributes, prop)) {
+                this.writeAttribute(prop, attributes[prop]);
+            }
+        }
+        return this;
+    }
+    /**
+     * Writes an attribute to an array of attributes that is going to be used in writeBeginTag function
+     * @param {String} name - The name of the HTML attribute
+     * @param {String} value - The value of the HTML attribute
+     * @returns {HtmlWriter}
+     */
+     addAttribute(name: string, value: any): this {
         this.bufferedAttributes.push({ name: name, value: value });
         return this;
     }
     // noinspection JSUnusedGlobalSymbols
     /**
      * Writes an array of attributes to the output buffer. This attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
-     * @param {Array|Object} obj - An array of attributes or an object that represents an array of attributes
+     * @param {HtmlAttributeIndexer} attributes - An object which represents an array of attributes
      * @returns {HtmlWriter}
      */
-    writeAttributes(obj: any[] | {}): this {
-        if (obj === null) {
+     addAttributes(attributes: HtmlAttributeIndexer): this {
+        if (attributes === null) {
             return this;
         }
-        if (Array.isArray(obj)) {
-            for (let i = 0; i < obj.length; i++) {
-                this.bufferedAttributes.push({ name: obj[i].name, value: obj[i].value });
-            }
-        } else {
-            const indexed = obj as PropertyIndexer;
-            for (let prop in indexed) {
-                if (Object.prototype.hasOwnProperty.call(indexed, prop)) {
-                    if (indexed[prop] !== null) {
-                        this.bufferedAttributes.push({ name: prop, value: indexed[prop] });
-                    }
-                }
+        for (let prop in attributes) {
+            if (Object.prototype.hasOwnProperty.call(attributes, prop)) {
+                this.bufferedAttributes.push({ name: prop, value: attributes[prop] });
             }
         }
         return this;
@@ -82,47 +102,37 @@ class HtmlWriter {
      * @param {String} tag
      * @returns {HtmlWriter}
      */
-    writeBeginTag(tag: string): this {
-        if (this.bufferedTags.length) {
-            this.writeAttributesAndCloseTag();
+    renderBeginTag(tag: string): this {
+        this.write(HTML_START_TAG_STRING.replace(/%0/, tag));
+        // write buffered attributes
+        if (this.bufferedAttributes.length > 0) {
+            this.bufferedAttributes.forEach((attr) => {
+                this.writeAttribute(attr.name, attr.value);
+            });
         }
-        //write <TAG
-        if (this.indent) {
-            //this.buffer += '\n';
-            this.buffer += repeat('\t', this.bufferedTags.length);
-        }
-        this.buffer += HTML_START_TAG_STRING.replace(/%0/, tag);
+        // clear buffered attributes
+        this.bufferedAttributes.splice(0, this.bufferedAttributes.length);
+        // write />
+        this.write(HtmlWriter.TagRightChar);
         this.bufferedTags.push(tag);
         return this;
     }
 
-    private writeAttributesAndCloseTag() {
-        if (this.bufferedAttributes.length > 0) {
-            let s = '';
-            this.bufferedAttributes.forEach(function (attr) {
-                //write attribute='value'
-                s += HTML_SPACE_CHAR;
-                s += HTML_ATTR_STRING.replace(/%0/, attr.name).replace(/%1/, escape(attr.value));
-            });
-            this.buffer += s;
-        }
-        this.bufferedAttributes.splice(0, this.bufferedAttributes.length);
-        this.buffer += HTML_END_CHAR;
+    /**
+     * @param {String} tag
+     * @returns {HtmlWriter}
+     */
+    writeBeginTag(tag: string): this {
+        this.buffer += HTML_START_TAG_STRING.replace(/%0/, tag);
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Writes a full begin HTML tag (e.g <div/>).
      * @param {String} tag
      * @returns {HtmlWriter}
      */
     writeFullBeginTag(tag: string): this {
-        //write <TAG
-        if (this.indent) {
-            this.buffer += '\n';
-            this.buffer += repeat('\t', this.bufferedTags.length);
-        }
         this.buffer += HTML_START_TAG_STRING.replace(/%0/, tag);
         this.buffer += HTML_FULL_END_STRING;
         return this;
@@ -132,20 +142,20 @@ class HtmlWriter {
      * Writes an end HTML tag (e.g </div>) based on the current buffered tags.
      * @returns {HtmlWriter}
      */
-    writeEndTag(tag: string): this {
-        let tagsLength = this.bufferedTags ? this.bufferedTags.length : 0;
-        if (tagsLength === 0) {
-            return this;
+    renderEndTag(): this {
+        if (this.bufferedTags.length  === 0) {
+            throw new Error('HtmlWriter.renderEndTag() should be called after HtmlWriter.renderBeginTag()');
         }
-        if (this.indent) {
-            this.buffer += '\n';
-            this.buffer += repeat('\t', tagsLength - 1);
-        }
-        // write attributes and close tag
-        this.writeAttributesAndCloseTag();
-
+        this.writeEndTag(this.bufferedTags[this.bufferedTags.length - 1]);
+        this.bufferedTags.splice(this.bufferedTags.length - 1, 1);
+        return this;
+    }
+    /**
+     * Writes an end HTML tag (e.g </div>) based on the current buffered tags.
+     * @returns {HtmlWriter}
+     */
+     writeEndTag(tag: string): this {
         this.buffer += HTML_END_TAG_STRING.replace(/%0/, tag);
-        this.bufferedTags.splice(tagsLength - 1, 1);
         return this;
     }
     // noinspection JSUnusedGlobalSymbols
@@ -157,10 +167,6 @@ class HtmlWriter {
     writeText(s: string): this {
         if (!s) {
             return this;
-        }
-        if (this.indent) {
-            this.buffer += '\n';
-            this.buffer += repeat('\t', this.bufferedTags.length);
         }
         this.buffer += escape(s);
         return this;
@@ -177,9 +183,26 @@ class HtmlWriter {
     /**
      * @returns {String}
      */
-    toString() {
+    toString(): string {
+        if (this.indent) {
+            return this.format(this.buffer);
+        }
         return this.buffer;
     }
+
+    private format(buffer: string) {
+        return prettier.format(buffer, {
+            htmlWhitespaceSensitivity: 'ignore',
+            parser: 'html',
+            printWidth: 140,
+            useTabs: true,
+            tabWidth: 2,
+            plugins: [
+                htmlParser
+            ]
+          });
+    }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @param {function} writeFunc
@@ -187,11 +210,13 @@ class HtmlWriter {
     writeTo(writeFunc: (s: string) => void) {
         if (typeof writeFunc === 'function') {
             //call function
-            writeFunc(this.buffer);
+            if (this.indent) {
+                writeFunc(this.format(this.buffer));    
+            } else {
+                writeFunc(this.buffer);
+            }
             //and clear buffer
             this.buffer = '';
-            //and clear buffered tags
-            this.bufferedTags.splice(0, this.bufferedTags.length);
         } else {
             throw new TypeError('Write operator must be a function');
         }
