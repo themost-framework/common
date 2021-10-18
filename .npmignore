@@ -10,8 +10,12 @@ tsconfig.spec.json
 rollup.config.js
 babel.config.js
 
+# github
+.github
+
 #editors
 .idea
 .vscode
 .theia
 .DS_Store
+.devcontainer
