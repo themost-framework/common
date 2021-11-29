@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "declaration": false,
-        "target": "esnext",
-        "module": "commonjs",
+        "target": "ESNext",
+        "module": "CommonJS",
         "moduleResolution": "node",
-        "resolveJsonModule": true,
+        "resolveJsonModule": false,
         "declarationDir": "./dist",
         "sourceMap": true,
         "noImplicitAny": true,
@@ -16,6 +16,10 @@
             "dom"
         ]
     },
+    "include": [
+        "spec",
+        "src"
+    ],
     "exclude": [
         "node_modules"
     ]

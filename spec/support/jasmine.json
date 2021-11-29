@@ -5,6 +5,7 @@
   ],
   "helpers": [
     "helpers/env.js",
+    "helpers/babel.js",
     "helpers/ts.js",
     "helpers/reporter.js"
   ],
