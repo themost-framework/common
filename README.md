@@ -8,7 +8,7 @@
 [![npm](https://img.shields.io/npm/dw/@themost/common)](https://www.npmjs.com/package/@themost%2Fcommon)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/@themost/common)
 ### @themost/common
-MOST Web Framework 2.0 **Codename Blueshift** Common
+MOST Web Framework 2.0 **Codename Zero Gravity** Common
 
 License: [BSD-3-Clause](https://github.com/kbarbounakis/themost/blob/master/LICENSE)
 
@@ -18,10 +18,5 @@ Install @themost/common:
 
     npm i @themost/common
 
-#### Development
-
-This repo is a submodule of [MOST Web Framework](http://github.com/themost-framework/themost)
-
-    git clone http://github.com/themost-framework/themost.git
 
 
