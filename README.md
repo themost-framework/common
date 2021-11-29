@@ -8,7 +8,7 @@
 [![npm](https://img.shields.io/npm/dw/@themost/common)](https://www.npmjs.com/package/@themost%2Fcommon)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/@themost/common)
 ### @themost/common
-MOST Web Framework 2.0 **Codename Zero Gravity** Common
+MOST Web Framework 2.0 **Codename Zero Gravity** Common Module
 
 License: [BSD-3-Clause](https://github.com/kbarbounakis/themost/blob/master/LICENSE)
 
