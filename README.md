@@ -1,6 +1,4 @@
 [![npm](https://img.shields.io/npm/v/@themost%2Fcommon.svg)](https://www.npmjs.com/package/@themost%2Fcommon)
-![](https://img.shields.io/david/themost-framework/themost-common) ![](https://img.shields.io/david/peer/themost-framework/themost-common)
-![](https://img.shields.io/david/dev/themost-framework/themost-common)
 ![GitHub top language](https://img.shields.io/github/languages/top/themost-framework/themost-common)
 [![License](https://img.shields.io/npm/l/@themost/common)](https://github.com/themost-framework/themost-common/blob/master/LICENSE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/themost-framework/themost-common)
