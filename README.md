@@ -7,6 +7,9 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/themost-framework/themost-common)
 [![npm](https://img.shields.io/npm/dw/@themost/common)](https://www.npmjs.com/package/@themost%2Fcommon)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/@themost/common)
+
+![MOST Web Framework Zero Gravity](./docs/img/themost_framework_v3_256.png)
+
 ### @themost/common
 MOST Web Framework **Codename Zero Gravity** Common Module
 
