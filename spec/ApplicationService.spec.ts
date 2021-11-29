@@ -1,5 +1,5 @@
-import {ApplicationService, ApplicationBase, ApplicationServiceConstructor} from '../app';
-import {ConfigurationBase} from '../config';
+import {ApplicationService, ApplicationBase,
+    ApplicationServiceConstructor, ConfigurationBase} from '../src';
 class SampleService extends ApplicationService {
     constructor(app: any) {
         super(app);
@@ -7,7 +7,8 @@ class SampleService extends ApplicationService {
 }
 
 class SampleApplication implements ApplicationBase {
-    configuration: ConfigurationBase;    useStrategy(serviceCtor: ApplicationServiceConstructor<any>, strategyCtor: ApplicationServiceConstructor<any>): this {
+    configuration: ConfigurationBase;
+    useStrategy(serviceCtor: ApplicationServiceConstructor<any>, strategyCtor: ApplicationServiceConstructor<any>): this {
         throw new Error('Method not implemented.');
     }
     useService(serviceCtor: ApplicationServiceConstructor<any>): this {
@@ -35,6 +36,6 @@ describe('ApplicationService', () => {
         expect(()=> {
             //@ts-ignore-next-line
             service.application = app;
-        }).toThrowError('Cannot assign to read only property \'application\' of object \'#<SampleService>\'');
+        }).toThrowError();
     });
 });

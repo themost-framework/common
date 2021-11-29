@@ -1,4 +1,4 @@
-import {ConfigurationBase} from '../config';
+import {ConfigurationBase} from '../src';
 
 class ServiceType {
     get server() {
