@@ -14,6 +14,7 @@ jobs:
           node-version: 14
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      - run: npm run build
       - run: npm unpublish @themost/common@next
       - run: npm publish --tag next --access=public
         env:
