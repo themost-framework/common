@@ -439,3 +439,17 @@ export interface DataQueryableBase {
     toLocaleUpperCase(): this;
     levels(n:number): this;
 }
+
+export interface DataObjectBase {
+
+    context?: DataContextBase;
+    getType(): any;
+    getId():any;
+    save(context?: DataContextBase): Promise<void>;
+    remove(context?: DataContextBase): Promise<void>;
+    getModel(): DataModelBase;
+    getAdditionalModel():Promise<DataModelBase>;
+    getAdditionalObject():Promise<DataContextBase|any>;
+    query(attr:string):DataQueryableBase;
+
+}
