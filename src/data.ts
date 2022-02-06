@@ -251,7 +251,7 @@ export interface DataModelPrivilegeBase {
     [k: string]: unknown;
 }
 
-export interface DataModelBase {
+export interface DataModelProperties {
     /**
      * A string which represents a literal unique identifier for this model e.g. https://example.com/models/User
      */
@@ -312,6 +312,10 @@ export interface DataModelBase {
     constraints?: DataModelConstraintBase[];
     eventListeners?: DataModelEventListenerBase[];
     privileges?: DataModelPrivilegeBase[];
+    
+}
+
+export interface DataModelBase extends DataModelProperties {
     get context(): DataContextBase;
     set context(value: DataContextBase);
     asQueryable(): DataQueryableBase;
