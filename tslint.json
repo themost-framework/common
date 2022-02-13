@@ -3,6 +3,7 @@
     "rules": {
         "typedef-whitespace": false,
         "max-line-length": [false],
+        "max-classes-per-file": false,
         "whitespace": false,
         "comment-format": false,
         "no-bitwise": false,

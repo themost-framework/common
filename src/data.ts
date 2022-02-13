@@ -1,3 +1,4 @@
+import { ApplicationBase } from './app';
 import { ConfigurationBase } from './config';
 
 // MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
@@ -361,8 +362,10 @@ export interface DataAdapterBase {
     executeInTransactionAsync(func: () => Promise<void>): Promise<void>;
 }
 
+
 export interface DataContextBase {
     db?: DataAdapterBase;
+    application?: ApplicationBase;
 
     model(name:any): DataModelBase;
     getConfiguration(): ConfigurationBase;
