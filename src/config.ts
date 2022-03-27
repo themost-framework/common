@@ -10,6 +10,7 @@ declare interface WindowEnv {
     };
 }
 
+// tslint:disable-next-line:ban-types
 declare type StrategyConstructor<T> = Function & { prototype: T };
 
 /**
@@ -20,10 +21,10 @@ declare type StrategyConstructor<T> = Function & { prototype: T };
  */
 class ConfigurationBase {
 
-    private _strategies: any;
-    private _configurationPath: string;
+    private readonly _strategies: any;
+    private readonly _configurationPath: string;
     private _executionPath: string;
-    private _config: any;
+    private readonly _config: any;
 
     private static _currentConfiguration: ConfigurationBase;
 
@@ -46,7 +47,7 @@ class ConfigurationBase {
             let env = 'production';
             //node.js mode
             if (process && process.env) {
-                env = process.env['NODE_ENV'] || 'production';
+                env = process.env.NODE_ENV || 'production';
             } else if (window && Object.prototype.hasOwnProperty.call(window, 'env')) {
                 //browser mode
                 env = (window as WindowEnv).env.BROWSER_ENV || 'production';
@@ -79,15 +80,15 @@ class ConfigurationBase {
             }
         }
         //initialize settings object
-        this._config['settings'] = this._config['settings'] || {};
+        this._config.settings = this._config.settings || {};
 
         /**
          * @name ConfigurationBase#settings
          * @type {*}
          */
         Object.defineProperty(this, 'settings', {
-            get: function () {
-                return this._config['settings'];
+            get () {
+                return this._config.settings;
             },
             enumerable: true,
             configurable: false
@@ -218,7 +219,7 @@ class ConfigurationBase {
 
 
 class ConfigurationStrategy {
-    private _config: ConfigurationBase;
+    private readonly _config: ConfigurationBase;
     constructor(config: ConfigurationBase) {
         Args.check(this.constructor.name !== ConfigurationStrategy.name, new AbstractClassError());
         Args.notNull(config, 'Configuration');
@@ -251,7 +252,7 @@ class ModuleLoaderStrategy extends ConfigurationStrategy {
                  * get require paths collection
                  * @type string[]
                  */
-                let paths = require.resolve.paths(modulePath);
+                const paths = require.resolve.paths(modulePath);
                 //get execution
                 let path1 = this.getConfiguration().getExecutionPath();
                 //loop directories to parent (like classic require)
@@ -262,18 +263,18 @@ class ModuleLoaderStrategy extends ConfigurationStrategy {
                         paths.push(PathUtils.join(path1, 'node_modules'));
                         //and check the next path which is going to be resolved
                         if (path1 === PathUtils.join(path1, '..')) {
-                            //if it is the same with the current path break loop
+                            // if it is the same with the current path break loop
                             break;
                         }
-                        //otherwise get parent path
+                        // otherwise, get parent path
                         path1 = PathUtils.join(path1, '..');
                     } else {
-                        //path already exists in paths collection, so break loop
+                        // path already exists in paths collection, so break loop
                         break;
                     }
                 }
-                let finalModulePath = require.resolve(modulePath, {
-                    paths: paths
+                const finalModulePath = require.resolve(modulePath, {
+                    paths
                 });
                 return require(finalModulePath);
             } else {
