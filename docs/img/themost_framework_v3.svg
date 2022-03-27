@@ -7,9 +7,9 @@
    viewBox="0 0 1024 1024"
    id="svg4344"
    version="1.1"
-   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
-   sodipodi:docname="drawing_themost_logo_v4.svg"
-   inkscape:export-filename="/Users/kbarbounakis/Desktop/most_logo_v3.png"
+   inkscape:version="1.1.2 (76b9e6a115, 2022-02-25)"
+   sodipodi:docname="themost_framework_v3.svg"
+   inkscape:export-filename="/home/kbarbounakis/Projects/github/themost-framework/common/docs/img/themost_framework_v3_256.png"
    inkscape:export-xdpi="24"
    inkscape:export-ydpi="24"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -46,17 +46,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.38134332"
-     inkscape:cx="540.19565"
-     inkscape:cy="605.75337"
+     inkscape:cx="-11.80039"
+     inkscape:cy="554.61834"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="1680"
-     inkscape:window-height="934"
-     inkscape:window-x="23"
-     inkscape:window-y="48"
-     inkscape:window-maximized="0"
+     inkscape:window-width="1366"
+     inkscape:window-height="704"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
      showguides="false"
      inkscape:guide-bbox="true"
      inkscape:pagecheckerboard="0">
@@ -103,25 +103,11 @@
      id="layer1"
      transform="translate(0,-28.362114)">
     <g
-       id="g2314"
-       transform="translate(37.515519,-27.127383)">
-      <path
-         sodipodi:open="true"
-         sodipodi:end="3.1415927"
-         sodipodi:start="0"
-         sodipodi:ry="422.99469"
-         sodipodi:rx="422.99469"
-         sodipodi:cy="-30.361664"
-         sodipodi:cx="736.78687"
-         sodipodi:type="arc"
-         id="path4712"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:#5d37a2;stroke-width:82.308;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:arc-type="arc"
-         d="M 1159.7816,-30.361664 A 422.99469,422.99469 0 0 1 948.2842,335.96249 422.99469,422.99469 0 0 1 525.28951,335.96248 422.99469,422.99469 0 0 1 313.79218,-30.361664"
-         transform="rotate(45)" />
+       id="g332"
+       transform="matrix(1.44,0,0,1.44,-301.88258,-151.66407)">
       <g
          id="g2306"
-         transform="translate(86.536196,-34.090017)">
+         transform="translate(124.05172,-61.2174)">
         <path
            sodipodi:open="true"
            sodipodi:end="3.1415927"
