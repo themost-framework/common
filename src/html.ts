@@ -38,7 +38,7 @@ class HtmlWriter {
         this.buffer = '';
         /**
          * @private
-         * @type {Integer}
+         * @type {number}
          */
         this.indent = true;
     }
@@ -55,7 +55,7 @@ class HtmlWriter {
         return this;
     }
     /**
-     * Writes an array of attributes to the output buffer. This attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
+     * Writes an array of attributes to the output buffer. These attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
      * @param {HtmlAttributeIndexer} attributes - An object which represents an array of attributes
      * @returns {HtmlWriter}
      */
@@ -63,7 +63,7 @@ class HtmlWriter {
         if (attributes === null) {
             return this;
         }
-        for (let prop in attributes) {
+        for (const prop in attributes) {
             if (Object.prototype.hasOwnProperty.call(attributes, prop)) {
                 this.writeAttribute(prop, attributes[prop]);
             }
@@ -77,12 +77,12 @@ class HtmlWriter {
      * @returns {HtmlWriter}
      */
      addAttribute(name: string, value: any): this {
-        this.bufferedAttributes.push({ name: name, value: value });
+        this.bufferedAttributes.push({ name, value });
         return this;
     }
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Writes an array of attributes to the output buffer. This attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
+     * Writes an array of attributes to the output buffer. These attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
      * @param {HtmlAttributeIndexer} attributes - An object which represents an array of attributes
      * @returns {HtmlWriter}
      */
@@ -90,7 +90,7 @@ class HtmlWriter {
         if (attributes === null) {
             return this;
         }
-        for (let prop in attributes) {
+        for (const prop in attributes) {
             if (Object.prototype.hasOwnProperty.call(attributes, prop)) {
                 this.bufferedAttributes.push({ name: prop, value: attributes[prop] });
             }
@@ -185,12 +185,12 @@ class HtmlWriter {
      */
     toString(): string {
         if (this.indent) {
-            return this.format(this.buffer);
+            return HtmlWriter.format(this.buffer);
         }
         return this.buffer;
     }
 
-    private format(buffer: string) {
+    protected static format(buffer: string): string {
         return prettier.format(buffer, {
             htmlWhitespaceSensitivity: 'ignore',
             parser: 'html',
@@ -211,7 +211,7 @@ class HtmlWriter {
         if (typeof writeFunc === 'function') {
             //call function
             if (this.indent) {
-                writeFunc(this.format(this.buffer));    
+                writeFunc(HtmlWriter.format(this.buffer));
             } else {
                 writeFunc(this.buffer);
             }

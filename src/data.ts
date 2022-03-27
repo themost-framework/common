@@ -1,7 +1,7 @@
+// MOST Web Framework Codename ZeroGraviry Copyright (c) 2017-2022, THEMOST LP All rights reserved
 import { ApplicationBase } from './app';
 import { ConfigurationBase } from './config';
 
-// MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
 export type Types =
     | 'Float'
     | 'Boolean'
@@ -140,7 +140,7 @@ export interface DataFieldBase {
      */
     property?: string;
     /**
-     * A boolean value which indicates whether this attribute represents an one-to-many or many-to-many association between two models.
+     * A boolean value which indicates whether this attribute represents a one-to-many or many-to-many association between two models.
      */
     many?: boolean;
     /**
@@ -313,7 +313,6 @@ export interface DataModelProperties {
     constraints?: DataModelConstraintBase[];
     eventListeners?: DataModelEventListenerBase[];
     privileges?: DataModelPrivilegeBase[];
-    
 }
 
 export interface DataModelBase extends DataModelProperties {

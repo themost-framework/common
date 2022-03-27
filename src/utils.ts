@@ -1,5 +1,5 @@
-// MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
-import { MD5, SHA1, SHA256 } from "crypto-js";
+// MOST Web Framework Codename ZeroGraviry Copyright (c) 2017-2022, THEMOST LP All rights reserved
+import { MD5, SHA1, SHA256 } from 'crypto-js';
 const isNode = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
 
 const UUID_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -26,20 +26,20 @@ declare interface PropertyIndexer {
  */
 class UnknownPropertyDescriptor {
     constructor(obj: any, name: string) {
-        Object.defineProperty(this, 'value', { 
+        Object.defineProperty(this, 'value', {
             configurable: false,
             enumerable: true,
-            get: function () {
+            get () {
                 return obj[name];
             },
-            set: function (value) {
+            set (value) {
                 obj[name] = value;
             }
         });
         Object.defineProperty(this, 'name', {
             configurable: false,
             enumerable: true,
-            get: function () {
+            get () {
                 return name;
             }
         });
@@ -54,15 +54,6 @@ class LangUtils {
      * Inherit the prototype methods from one constructor into another.
      * @param {Function} ctor
      * @param {Function|*} superCtor
-     * @example
-    function Animal() {
-        //
-    }
-    
-    function Dog() {
-        Dog.super_.bind(this)();
-    }
-    LangUtils.inherits(Dog,Animal);
      */
     static inherits(ctor: any, superCtor: any): void {
 
@@ -72,8 +63,8 @@ class LangUtils {
 
         //if process is running under node js
         if (isNode) {
-            let utilModule = 'util';
-            let util = require(utilModule);
+            const utilModule = 'util';
+            const util = require(utilModule);
             //call util.inherits() function
             return util.inherits(ctor, superCtor);
         }
@@ -113,7 +104,7 @@ class LangUtils {
         if (typeof fn !== 'function'){
             return [];
         }
-        let fnStr = fn.toString().replace(STRIP_COMMENTS, '');
+        const fnStr = fn.toString().replace(STRIP_COMMENTS, '');
         let result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(/([^\s,]+)/g);
         if (result === null)
             result = [];
@@ -138,7 +129,7 @@ class LangUtils {
                 result = null;
             }
             else if (value.match(IntegerRegex)) {
-                result = parseInt(value);
+                result = parseInt(value, 10);
             }
             else if (value.match(FloatRegex)) {
                 result = parseFloat(value);
@@ -167,7 +158,10 @@ class LangUtils {
 
         options = options || { convertValues: false };
         //find base notation
-        let match = /(^\w+)\[/.exec(expr), name, descriptor, expr1;
+        let match = /(^\w+)\[/.exec(expr);
+        let name;
+        let descriptor;
+        let expr1;
         if (match) {
             //get property name
             name = match[1];
@@ -191,7 +185,7 @@ class LangUtils {
         }
         else if (expr.indexOf('[') === 0) {
             //get property
-            let re = /\[(.*?)\]/g;
+            const re = /\[(.*?)]/g;
             match = re.exec(expr);
             if (match) {
                 name = match[1];
@@ -252,11 +246,11 @@ class LangUtils {
      * @returns {*}
      */
     static parseForm(form: any, options?:  any): any {
-        let result = {};
+        const result = {};
         if (typeof form === 'undefined' || form === null)
             return result;
-        let keys = Object.keys(form);
-        keys.forEach(function (key) {
+        const keys = Object.keys(form);
+        keys.forEach((key) => {
             if (Object.prototype.hasOwnProperty.call(form, key)) {
                 LangUtils.extend(result, key, form[key], options);
             }
@@ -264,59 +258,59 @@ class LangUtils {
         return result;
     }
     /**
-     * Parses any value or string and returns the resulted object.
-     * @param {*} any
+     * Parses value or string and returns the resulted object.
+     * @param {*} value
      * @returns {*}
      */
-    static parseValue(any: any): any {
-        return LangUtils.convert(any);
+    static parseValue(value: any): any {
+        return LangUtils.convert(value);
     }
     /**
-     * Parses any value and returns the equivalent integer.
-     * @param {*} any
+     * Parses value value and returns the equivalent integer.
+     * @param {*} value
      * @returns {*}
      */
-    static parseInt(any: any): number {
-        return parseInt(any) || 0;
+    static parseInt(value: any): number {
+        return parseInt(value, 10) || 0;
     }
     /**
-     * Parses any value and returns the equivalent float number.
-     * @param {*} any
+     * Parses value value and returns the equivalent float number.
+     * @param {*} value
      * @returns {*}
      */
-    static parseFloat(any: any): number {
-        return parseFloat(any) || 0;
+    static parseFloat(value: any): number {
+        return parseFloat(value) || 0;
     }
     /**
-     * Parses any value and returns the equivalent boolean.
-     * @param {*} any
+     * Parses value and returns the equivalent boolean.
+     * @param {*} value
      * @returns {*}
      */
-    static parseBoolean(any: any): boolean {
-        if (typeof any === 'undefined' || any === null)
+    static parseBoolean(value: any): boolean {
+        if (typeof value === 'undefined' || value === null)
             return false;
-        else if (typeof any === 'number')
-            return any !== 0;
-        else if (typeof any === 'string') {
-            if (any.match(IntegerRegex) || any.match(FloatRegex)) {
-                return parseInt(any, 10) !== 0;
+        else if (typeof value === 'number')
+            return value !== 0;
+        else if (typeof value === 'string') {
+            if (value.match(IntegerRegex) || value.match(FloatRegex)) {
+                return parseInt(value, 10) !== 0;
             }
-            else if (any.match(BooleanTrueRegex))
+            else if (value.match(BooleanTrueRegex))
                 return true;
-            else if (any.match(BooleanFalseRegex))
+            else if (value.match(BooleanFalseRegex))
                 return false;
-            else if (/^yes$|^on$|^y$|^valid$/i.test(any))
+            else if (/^yes$|^on$|^y$|^valid$/i.test(value))
                 return true;
-            else if (/^no$|^off$|^n$|^invalid$/i.test(any))
+            else if (/^no$|^off$|^n$|^invalid$/i.test(value))
                 return false;
 
             else
                 return false;
         }
-        else if (typeof any === 'boolean')
-            return any;
+        else if (typeof value === 'boolean')
+            return value;
         else {
-            return (parseInt(any) || 0) !== 0;
+            return (parseInt(value, 10) || 0) !== 0;
         }
     }
     /**
@@ -439,14 +433,15 @@ class Args {
 }
 
 class TextUtils {
+    // tslint:disable-next-line:no-empty
     constructor() {
     }
     /**
-         * Converts the given parameter to MD5 hex string
-         * @static
-         * @param {*} value
-         * @returns {string|undefined}
-         */
+     * Converts the given parameter to MD5 hex string
+     * @static
+     * @param {*} value
+     * @returns {string|undefined}
+     */
     static toMD5(value: any): string {
         if (value == null) {
             return;
@@ -457,11 +452,11 @@ class TextUtils {
         return MD5(JSON.stringify(value)).toString();
     }
     /**
-         * Converts the given parameter to SHA1 hex string
-         * @static
-         * @param {*} value
-         * @returns {string|undefined}
-         */
+     * Converts the given parameter to SHA1 hex string
+     * @static
+     * @param {*} value
+     * @returns {string|undefined}
+     */
     static toSHA1(value: any): string {
         if (value == null) {
             return;
@@ -472,11 +467,11 @@ class TextUtils {
         return SHA1(JSON.stringify(value)).toString();
     }
     /**
-         * Converts the given parameter to SHA256 hex string
-         * @static
-         * @param {*} value
-         * @returns {string|undefined}
-         */
+     * Converts the given parameter to SHA256 hex string
+     * @static
+     * @param {*} value
+     * @returns {string|undefined}
+     */
     static toSHA256(value: any): string {
         if (value == null) {
             return;
@@ -487,13 +482,13 @@ class TextUtils {
         return SHA256(JSON.stringify(value)).toString();
     }
     /**
-         * Returns a random GUID/UUID string
-         * @static
-         * @returns {string}
-         */
+     * Returns a random GUID/UUID string
+     * @static
+     * @returns {string}
+     */
     static newUUID(): string {
-        let chars = UUID_CHARS;
-        let uuid = [];
+        const chars = UUID_CHARS;
+        const uuid = [];
         // rfc4122, version 4 form
         let r: any = void 0;
         // rfc4122 requires these characters
@@ -518,6 +513,7 @@ class TextUtils {
  */
 class TraceUtils {
     private static _logger: TraceLogger;
+    // tslint:disable-next-line:no-empty
     constructor() {
     }
     static useLogger(logger: TraceLogger) {
@@ -530,53 +526,53 @@ class TraceUtils {
         TraceUtils._logger.options.format = format;
     }
     /**
-         * @static
-         * @param {...*} data
-         */
+     * @static
+     * @param {...*} args
+     */
     // eslint-disable-next-line no-unused-vars
     static log(...args: any) {
         TraceUtils._logger.log.apply(TraceUtils._logger, args);
     }
     /**
-         * @static
-         * @param {...*} data
-         */
+     * @static
+     * @param {...*} args
+     */
     // eslint-disable-next-line no-unused-vars
     static error(...args: any) {
         TraceUtils._logger.error.apply(TraceUtils._logger, args);
     }
     /**
-         *
-         * @static
-         * @param {...*} data
-         */
+     *
+     * @static
+     * @param {...*} args
+     */
     // eslint-disable-next-line no-unused-vars
     static info(...args: any) {
         TraceUtils._logger.info.apply(TraceUtils._logger, args);
     }
     /**
-         *
-         * @static
-         * @param {*} data
-         */
+     *
+     * @static
+     * @param {*} args
+     */
     // eslint-disable-next-line no-unused-vars
     static warn(...args: any) {
         TraceUtils._logger.warn.apply(TraceUtils._logger, args);
     }
     /**
-         *
-         * @static
-         * @param {*} data
-         */
+     *
+     * @static
+     * @param {*} args
+     */
     // eslint-disable-next-line no-unused-vars
     static verbose(...args: any) {
         TraceUtils._logger.verbose.apply(TraceUtils._logger, args);
     }
     /**
-         *
-         * @static
-         * @param {...*} data
-         */
+     *
+     * @static
+     * @param {...*} args
+     */
     // eslint-disable-next-line no-unused-vars
     static debug(...args: any) {
         TraceUtils._logger.debug.apply(TraceUtils._logger, args);
@@ -588,12 +584,12 @@ class RandomUtils {
         //
     }
     /**
-         * Returns a random string based on the length specified
-         * @param {Number} length
-         */
+     * Returns a random string based on the length specified
+     * @param {Number} length
+     */
     static randomChars(length?: number) {
         length = length || 8;
-        let chars = 'abcdefghkmnopqursuvwxz2456789ABCDEFHJKLMNPQURSTUVWXYZ';
+        const chars = 'abcdefghkmnopqursuvwxz2456789ABCDEFHJKLMNPQURSTUVWXYZ';
         let str = '';
         for (let i = 0; i < length; i++) {
             str += chars.substr(this.randomInt(0, chars.length - 1), 1);
@@ -601,19 +597,19 @@ class RandomUtils {
         return str;
     }
     /**
-         * Returns a random integer between a minimum and a maximum value
-         * @param {number} min
-         * @param {number} max
-         */
+     * Returns a random integer between a minimum and a maximum value
+     * @param {number} min
+     * @param {number} max
+     */
     static randomInt(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     /**
-         * Returns a random string based on the length specified
-         * @static
-         * @param {number} length
-         * @returns {string}
-         */
+     * Returns a random string based on the length specified
+     * @static
+     * @param {number} length
+     * @returns {string}
+     */
     static randomHex(length?: number): string {
         length = (length || 8) * 2;
         let str = '';
@@ -629,31 +625,31 @@ class NumberUtils {
         //
     }
     /**
-         * Converts a base-26 formatted string to the equivalent integer
-         * @static
-         * @param {string} s A base-26 formatted string e.g. aaaaaaaa for 0, baaaaaaa for 1 etc
-         * @return {number} The equivalent integer value
-         */
+     * Converts a base-26 formatted string to the equivalent integer
+     * @static
+     * @param {string} s A base-26 formatted string e.g. aaaaaaaa for 0, baaaaaaa for 1 etc
+     * @return {number} The equivalent integer value
+     */
     static fromBase26(s: string): number {
         let num = 0;
         if (!/[a-z]{8}/.test(s)) {
             throw new Error('Invalid base-26 format.');
         }
-        let a = 'a'.charCodeAt(0);
+        const a = 'a'.charCodeAt(0);
         for (let i = 7; i >= 0; i--) {
             num = (num * 26) + (s[i].charCodeAt(0) - a);
         }
         return num;
     }
     /**
-         * Converts an integer to the equivalent base-26 formatted string
-         * @static
-         * @param {number} x The integer to be converted
-         * @return {string} The equivalent string value
-         */
+     * Converts an integer to the equivalent base-26 formatted string
+     * @static
+     * @param {number} x The integer to be converted
+     * @return {string} The equivalent string value
+     */
     static toBase26(x: any): string {
         //noinspection ES6ConvertVarToLetConst
-        let num = parseInt(x);
+        let num = parseInt(x, 10);
         if (num < 0) {
             throw new Error('A non-positive integer cannot be converted to base-26 format.');
         }
@@ -662,7 +658,7 @@ class NumberUtils {
         }
         let out = '';
         let length = 1;
-        let a = 'a'.charCodeAt(0);
+        const a = 'a'.charCodeAt(0);
         while (length <= 8) {
             out += String.fromCharCode(a + (num % 26));
             num = Math.floor(num / 26);
@@ -683,20 +679,22 @@ class PathUtils {
      */
     // eslint-disable-next-line no-unused-vars
     static join(...part: string[]) {
-        let pathModule = 'path';
+        const pathModule = 'path';
         if (isNode) {
-            let path = require(pathModule);
+            const path = require(pathModule);
             return path.join.apply(null, Array.prototype.slice.call(arguments));
         }
         // Split the inputs into a list of path commands.
-        let parts: string[] = [], i, l;
+        let parts: string[] = [];
+        let i;
+        let l;
         for (i = 0, l = arguments.length; i < l; i++) {
             parts = parts.concat(arguments[i].split('/'));
         }
         // Interpret the path commands to get the new resolved path.
-        let newParts = [];
+        const newParts = [];
         for (i = 0, l = parts.length; i < l; i++) {
-            let part1 = parts[i];
+            const part1 = parts[i];
             // Remove leading and trailing slashes
             // Also remove "." segments
             if (!part1 || part1 === '.')
@@ -717,20 +715,20 @@ class PathUtils {
     }
 }
 
-let Reset = '\x1b[0m';
-let FgBlack = '\x1b[30m';
-let FgRed = '\x1b[31m';
-let FgGreen = '\x1b[32m';
+const Reset = '\x1b[0m';
+const FgBlack = '\x1b[30m';
+const FgRed = '\x1b[31m';
+const FgGreen = '\x1b[32m';
 // eslint-disable-next-line no-unused-vars
-let FgYellow = '\x1b[33m';
-let FgBlue = '\x1b[34m';
-let FgMagenta = '\x1b[35m';
+const FgYellow = '\x1b[33m';
+const FgBlue = '\x1b[34m';
+const FgMagenta = '\x1b[35m';
 // eslint-disable-next-line no-unused-vars
-let FgCyan = '\x1b[36m';
+const FgCyan = '\x1b[36m';
 // eslint-disable-next-line no-unused-vars
-let FgWhite = '\x1b[37m';
+const FgWhite = '\x1b[37m';
 
-let Bold = '\x1b[1m';
+const Bold = '\x1b[1m';
 
 declare interface LogLevelIndexer {
     [key: string]: number;
@@ -741,7 +739,7 @@ declare interface LogLevelIndexer {
     debug: number;
 }
 
-let LogLevels: LogLevelIndexer = {
+const LogLevels: LogLevelIndexer = {
     error: 0,
     warn: 1,
     info: 2,
@@ -749,7 +747,7 @@ let LogLevels: LogLevelIndexer = {
     debug: 4
 };
 
-let LogLevelColors = {
+const LogLevelColors = {
     error: FgRed,
     warn: FgMagenta,
     info: FgBlack,
@@ -757,9 +755,9 @@ let LogLevelColors = {
     debug: Bold + FgGreen
 };
 
-function zeroPad(number: number, length: number) {
-    number = number || 0;
-    let res = number.toString();
+function zeroPad(value: number, length: number) {
+    value = value || 0;
+    let res = value.toString();
     while (res.length < length) {
         res = '0' + res;
     }
@@ -837,7 +835,7 @@ class TraceLogger {
         return this.write.apply(this, ['verbose'].concat(args));
     }
     /**
-     * @param {...*} data
+     * @param {...*} args
      */
     debug(...args: any) {
         return this.write.apply(this, ['debug'].concat(args));
@@ -846,9 +844,8 @@ class TraceLogger {
         if (LogLevels[level] > LogLevels[this.options.level]) {
             return;
         }
-        const log = (level === 'error')
-            ? console.error
-            : console.log
+        // tslint:disable-next-line:no-console
+        const log = (level === 'error') ? console.error : console.log
         if (this.options.format === 'json') {
             return log.call(console, JSON.stringify([
                 timestamp(),
@@ -856,12 +853,12 @@ class TraceLogger {
             ].concat(args), (key, value: any) => {
                 if (value instanceof Error) {
                     const error = (value as PropertyIndexer);
-                    const result = Object.keys(error).reduce((obj, key) => {
-                        Object.defineProperty(obj, key, {
+                    const result = Object.keys(error).reduce((obj, key1) => {
+                        Object.defineProperty(obj, key1, {
                             enumerable: true,
                             configurable: true,
                             writable: true,
-                            value: error[key]
+                            value: error[key1]
                         });
                         return obj;
                     }, {
@@ -893,8 +890,8 @@ TraceUtils.useLogger(new TraceLogger());
 
 class Base26Number {
     constructor(value: any) {
-        let thisValue = value;
-        this.toString = function () {
+        const thisValue = value;
+        this.toString = () => {
             return Base26Number.toBase26(thisValue);
         };
     }
@@ -913,7 +910,7 @@ class Base26Number {
         }
         let out = '';
         let length = 1;
-        let a = 'a'.charCodeAt(0);
+        const a = 'a'.charCodeAt(0);
         while (length <= 8) {
             out += String.fromCharCode(a + (num % 26));
             num = Math.floor(num / 26);
@@ -931,7 +928,7 @@ class Base26Number {
         if (!/[a-z]{8}/.test(s)) {
             throw new Error('Invalid base-26 format.');
         }
-        let a = 'a'.charCodeAt(0);
+        const a = 'a'.charCodeAt(0);
         for (let i = 7; i >= 0; i--) {
             num = (num * 26) + (s[i].charCodeAt(0) - a);
         }
@@ -940,10 +937,10 @@ class Base26Number {
 }
 
 class Guid {
-    private _value: string;
+    private readonly _value: string;
     constructor(value?: string) {
         if (typeof value === 'string') {
-            let test = value.replace(/^{/, '').replace(/{$/, '');
+            const test = value.replace(/^{/, '').replace(/{$/, '');
             Args.check(GuidRegex.test(test), 'Value must be a valid UUID');
             this._value = test;
             return;

@@ -1,4 +1,4 @@
-// MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
+// MOST Web Framework Codename ZeroGraviry Copyright (c) 2017-2022, THEMOST LP All rights reserved
 
 import { EventEmitter } from 'events';
 import { applyEachSeries } from 'async';
@@ -15,12 +15,12 @@ function wrapAsyncListener(asyncListener: (...arg: any) => Promise<void>) {
     /**
      * @this SequentialEventEmitter
      */
-    let result = function() {
+    const result = function() {
         // get arguments without callback
-        let args = [].concat(Array.prototype.slice.call(arguments, 0, arguments.length -1));
+        const args = [].concat(Array.prototype.slice.call(arguments, 0, arguments.length -1));
         // get callback
-        let callback = arguments[arguments.length - 1];
-        return asyncListener.apply(this, args).then(function() {
+        const callback = arguments[arguments.length - 1];
+        return asyncListener.apply(this, args).then(() => {
             return callback();
         }).catch((err: Error) => {
             return callback(err);
@@ -39,11 +39,11 @@ function wrapOnceListener(listener: (...arg: any[]) => void) {
     /**
      * @this SequentialEventEmitter
      */
-    let result = function() {
+    const result = function() {
         // get arguments without callback
-        let args = Array.from(arguments);
+        const args = Array.from(arguments);
         // get callback
-        let callback = args.pop();
+        const callback = args.pop();
         args.push((err?: Error) => {
             Object.assign(listener, {
                 fired: true
@@ -70,14 +70,15 @@ function wrapOnceAsyncListener(event: string | symbol, asyncListener: (...arg: a
     /**
      * @this SequentialEventEmitter
      */
-    let result = function() {
-        let callee = arguments.callee;
+    const result = function() {
+        // tslint:disable-next-line:no-arg
+        const callee = arguments.callee;
         // get arguments without callback
-        let args = [].concat(Array.prototype.slice.call(arguments, 0, arguments.length -1));
+        const args = [].concat(Array.prototype.slice.call(arguments, 0, arguments.length -1));
         // get callback
-        let callback = arguments[arguments.length - 1];
-        let self = this;
-        return asyncListener.apply(self, args).then(function() {
+        const callback = arguments[arguments.length - 1];
+        const self = this;
+        return asyncListener.apply(self, args).then(() => {
             // manually remove async listener
             self.removeListener(event, callee);
             return callback();
@@ -117,9 +118,9 @@ class SequentialEventEmitter extends EventEmitter {
         if (typeof this.listeners !== 'function') {
             throw new Error('undefined listeners');
         }
-        let listeners: any = this.listeners(event);
+        const listeners: any = this.listeners(event);
 
-        let argsAndCallback = [].concat(Array.prototype.slice.call(arguments, 1));
+        const argsAndCallback = [].concat(Array.prototype.slice.call(arguments, 1));
         if (argsAndCallback.length > 0) {
             //check the last argument (expected callback function)
             if (typeof argsAndCallback[argsAndCallback.length - 1] !== 'function') {
@@ -127,7 +128,7 @@ class SequentialEventEmitter extends EventEmitter {
             }
         }
         //get callback function (the last argument of arguments list)
-        let callback = argsAndCallback.pop();
+        const callback = argsAndCallback.pop();
 
         //validate listeners
         if (listeners.length === 0) {
@@ -135,7 +136,7 @@ class SequentialEventEmitter extends EventEmitter {
             return callback();
         }
         argsAndCallback.push((err?: Error) => {
-            for(let listener of listeners) {
+            for(const listener of listeners) {
                 if (listener._listener && listener._listener.fired) {
                     this.removeListener(event, listener);
                 }
@@ -164,10 +165,11 @@ class SequentialEventEmitter extends EventEmitter {
      */
     unsubscribe(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this {
         // get event listeners
-        let listeners = this.listeners(event);
+        const listeners = this.listeners(event);
         // enumerate
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < listeners.length; i++) {
-            let item: any | { _listener: Function} = listeners[i];
+            const item: any | { _listener: any} = listeners[i];
             // if listener has an underlying listener
             if (typeof item._listener === 'function') {
                 // and it's the same with the listener specified
@@ -197,14 +199,14 @@ class SequentialEventEmitter extends EventEmitter {
      */
     // eslint-disable-next-line no-unused-vars
     next(event: string | symbol, ...args: any[]): Promise<void> {
-        let self = this;
+        const self = this;
         /**
          * get arguments as array
          * @type {*[]}
          */
-        let argsAndCallback: any[] = [event].concat(Array.prototype.slice.call(arguments, 1));
+        const argsAndCallback: any[] = [event].concat(Array.prototype.slice.call(arguments, 1));
         // eslint-disable-next-line no-undef
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             // set callback
             argsAndCallback.push((err: Error) => {
                 if (err) {

@@ -1,4 +1,4 @@
-// MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
+// MOST Web Framework Codename ZeroGraviry Copyright (c) 2017-2022, THEMOST LP All rights reserved
 
 import { AbstractMethodError } from './errors';
 import { AbstractClassError } from './errors';
@@ -63,11 +63,11 @@ interface IApplicationService {
      * @returns IApplication
      */
      abstract useStrategy(serviceCtor: ApplicationServiceConstructor<any>, strategyCtor: ApplicationServiceConstructor<any>): this;
-    
+
      abstract useService(serviceCtor: ApplicationServiceConstructor<any>): this;
 
      abstract hasService<T>(serviceCtor: ApplicationServiceConstructor<T>): boolean;
-     
+
      abstract getService<T>(serviceCtor: ApplicationServiceConstructor<T>): T;
     /**
      * @returns {ConfigurationBase}

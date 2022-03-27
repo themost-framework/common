@@ -1,4 +1,4 @@
-// MOST Web Framework 2.0 Codename ZeroGraviry Copyright (c) 2017-2021, THEMOST LP All rights reserved
+// MOST Web Framework Codename ZeroGraviry Copyright (c) 2017-2022, THEMOST LP All rights reserved
 
 import { Errors as errors } from './http-error-codes';
 
@@ -77,8 +77,8 @@ class HttpError extends CodedError {
     innerMessage: string;
     constructor(status: number, message?: string, innerMessage?: string) {
         super(message, 'E_HTTP');
-        let finalStatus = typeof status === 'number' ? status : 500;
-        let err = errors.find((x) => {
+        const finalStatus = typeof status === 'number' ? status : 500;
+        const err = errors.find((x) => {
             return x.statusCode === finalStatus;
         });
         if (err) {
@@ -104,7 +104,7 @@ class HttpError extends CodedError {
             return new HttpError(500);
         }
         if (Object.prototype.hasOwnProperty.call(err, 'statusCode')) {
-            return Object.assign(new HttpError((<IStatusError>err).statusCode, err.message), err);
+            return Object.assign(new HttpError((err as IStatusError).statusCode, err.message), err);
         }
         else {
             return Object.assign(new HttpError(500, err.message), err);
