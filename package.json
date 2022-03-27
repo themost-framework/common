@@ -1,6 +1,6 @@
 {
   "name": "@themost/common",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "MOST Web Framework Common Module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
