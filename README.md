@@ -6,12 +6,12 @@
 [![npm](https://img.shields.io/npm/dw/@themost/common)](https://www.npmjs.com/package/@themost%2Fcommon)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/@themost/common)
 
-![MOST Web Framework Zero Gravity](./docs/img/themost_framework_v3_256.png)
+![MOST Web Framework Zero Gravity](./docs/img/themost_framework_v3_128.png)
 
 ### @themost/common
-MOST Web Framework **Codename Zero Gravity** Common Module
+[MOST Web Framework](https://github.com/themost-framework/themost) **Codename Zero Gravity** Common Module
 
-License: [BSD-3-Clause](https://github.com/kbarbounakis/themost/blob/master/LICENSE)
+License: [BSD-3-Clause](https://github.com/themost-framework/themost/blob/master/LICENSE)
 
 #### Usage
 
