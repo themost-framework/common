@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "karma start",
-    "build": "rimraf dist && rollup -c ./rollup.config.js"
+    "build": "rimraf dist && rimraf platform-server/dist && rollup -c ./rollup.config.js"
   },
   "repository": {
     "type": "git",
