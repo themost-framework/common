@@ -1,4 +1,4 @@
-// MOST Web Framework Codename ZeroGraviry Copyright (c) 2017-2022, THEMOST LP All rights reserved
+// MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
 
 import { at as _at, set as _set} from 'lodash';
 import { Args } from './utils';

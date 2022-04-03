@@ -1,5 +1,4 @@
 {
-    "extends": "../tsconfig.json",
     "compilerOptions": {
         "baseUrl": ".",
         "skipLibCheck": true,
@@ -9,7 +8,6 @@
         "declarationMap": true,
         "declarationDir": ".",
         "declaration": true,
-        "outDir": "dist",
         "removeComments": false,
         "noImplicitAny": true,
         "moduleResolution": "node",

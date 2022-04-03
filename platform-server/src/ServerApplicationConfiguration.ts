@@ -1,5 +1,7 @@
-import { ConfigurationBase, TraceUtils } from '@themost/common';
+// MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
+import { ConfigurationBase, ModuleLoaderStrategy, TraceUtils } from '@themost/common';
 import {resolve} from 'path';
+import { DefaultModuleLoaderStrategy } from './DefaultModuleLoaderStrategy';
 
 class ServerApplicationConfiguration extends ConfigurationBase {
 
@@ -21,6 +23,8 @@ class ServerApplicationConfiguration extends ConfigurationBase {
         super();
         this.configurationPath = this.configurationPath || resolve(process.cwd(), 'config');
         this.executionPath = resolve(this.configurationPath, '..');
+        //load default module loader strategy
+        this.useStrategy(ModuleLoaderStrategy, DefaultModuleLoaderStrategy);
         let configSourcePath;
         try {
             let env = 'production';

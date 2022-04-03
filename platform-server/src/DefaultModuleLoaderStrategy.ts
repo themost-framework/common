@@ -1,3 +1,4 @@
+// MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
 import { ConfigurationBase, ModuleLoaderStrategy, Args } from '@themost/common';
 import { resolve, join } from 'path';
 

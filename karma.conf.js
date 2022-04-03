@@ -9,7 +9,8 @@ module.exports = (config) => {
             'karma-chrome-launcher',
             'karma-typescript',
             'karma-spec-reporter',
-            'karma-jasmine-html-reporter'
+            'karma-jasmine-html-reporter',
+            'karma-coverage'
         ],
         karmaTypescriptConfig: {
             tsconfig: "tsconfig.spec.json",
@@ -25,7 +26,11 @@ module.exports = (config) => {
         preprocessors: {
             '**/*.ts': [ 'karma-typescript' ]
         },
-        reporters: [ 'kjhtml', 'spec' ],
+        reporters: [ 'kjhtml', 'spec', 'coverage' ],
+        coverageReporter: {
+            type : 'text',
+            dir : 'coverage/'
+        },
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
