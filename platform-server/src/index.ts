@@ -1,2 +1,2 @@
 export * from './DefaultModuleLoaderStrategy';
-export * from './ApplicationConfigurationBase';
+export * from './ServerApplicationConfiguration';

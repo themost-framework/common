@@ -29,4 +29,32 @@ module.exports = [{
     plugins: [
         typescript({ tsconfig: './tsconfig.json' })
     ]
+}, {
+    input: './platform-server/src/index.ts',
+    output: [
+        {
+            name: '@themost/common/platform-server',
+            file: 'platform-server/dist/index.cjs.js',
+            format: 'cjs',
+            sourcemap: true
+        },
+        {
+            name: '@themost/common/platform-server',
+            file: 'platform-server/dist/index.esm.js',
+            format: 'esm',
+            sourcemap: true
+        },
+        {
+            name: '@themost/common/platform-server',
+            file: 'platform-server/dist/index.umd.js',
+            format: 'umd',
+            sourcemap: true
+        },
+    ],
+    external: Object.keys(pkg.dependencies).concat(
+        '@themost/common'
+    ),
+    plugins: [
+        typescript({ tsconfig: './platform-server/tsconfig.json' })
+    ]
 }];

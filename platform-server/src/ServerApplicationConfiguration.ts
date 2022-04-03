@@ -1,19 +1,19 @@
 import { ConfigurationBase, TraceUtils } from '@themost/common';
 import {resolve} from 'path';
 
-class ApplicationConfigurationBase extends ConfigurationBase {
+class ServerApplicationConfiguration extends ConfigurationBase {
 
-    private static _current: ApplicationConfigurationBase;
+    private static _current: ServerApplicationConfiguration;
 
-    public static get current(): ApplicationConfigurationBase {
-        if (ApplicationConfigurationBase._current == null) {
-            ApplicationConfigurationBase._current = new ApplicationConfigurationBase();
+    public static get current(): ServerApplicationConfiguration {
+        if (ServerApplicationConfiguration._current == null) {
+            ServerApplicationConfiguration._current = new ServerApplicationConfiguration();
         }
-        return ApplicationConfigurationBase._current;
+        return ServerApplicationConfiguration._current;
     }
 
-    public static set current(value: ApplicationConfigurationBase) {
-        ApplicationConfigurationBase._current = value;
+    public static set current(value: ServerApplicationConfiguration) {
+        ServerApplicationConfiguration._current = value;
     }
     public executionPath: string;
 
@@ -95,10 +95,10 @@ class ApplicationConfigurationBase extends ConfigurationBase {
      * @deprecated Use ApplicationConfigurationBase.current getter instead
      */
      static getCurrent() {
-        if (ApplicationConfigurationBase.current == null) {
-            ApplicationConfigurationBase.current = new ApplicationConfigurationBase();
+        if (ServerApplicationConfiguration.current == null) {
+            ServerApplicationConfiguration.current = new ServerApplicationConfiguration();
         }
-        return ApplicationConfigurationBase.current;
+        return ServerApplicationConfiguration.current;
     }
 
     /**
@@ -107,10 +107,10 @@ class ApplicationConfigurationBase extends ConfigurationBase {
      * @deprecated Use ApplicationConfigurationBase.current setter instead
      * @returns ConfigurationBase - An instance of ApplicationConfiguration class which represents the current configuration
      */
-     static setCurrent(configuration: ApplicationConfigurationBase): ApplicationConfigurationBase {
-        if (configuration instanceof ApplicationConfigurationBase) {
-            ApplicationConfigurationBase.current = configuration;
-            return ApplicationConfigurationBase.current;
+     static setCurrent(configuration: ServerApplicationConfiguration): ServerApplicationConfiguration {
+        if (configuration instanceof ServerApplicationConfiguration) {
+            ServerApplicationConfiguration.current = configuration;
+            return ServerApplicationConfiguration.current;
         }
         throw new TypeError('Invalid argument. Expected an instance of ApplicationConfigurationBase class.');
     }
@@ -118,5 +118,5 @@ class ApplicationConfigurationBase extends ConfigurationBase {
 }
 
 export {
-    ApplicationConfigurationBase
+    ServerApplicationConfiguration
 }

@@ -4,8 +4,10 @@
     "module": "dist/index.esm.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "test": "jasmine"
+        "test": "jasmine",
+        "build": "rimraf dist && rollup -c ./rollup.config.js"
     },
+    "dependencies": {},
     "devDependencies": {
         "module-alias": "^2.2.2"
     }
