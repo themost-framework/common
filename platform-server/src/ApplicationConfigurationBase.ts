@@ -33,26 +33,30 @@ class ApplicationConfigurationBase extends ConfigurationBase {
             this.config = require(configSourcePath);
         } catch (err) {
             if (err.code === 'MODULE_NOT_FOUND') {
-                TraceUtils.log('The environment specific configuration cannot be found or is inaccessible.');
+                TraceUtils.debug('The environment specific configuration cannot be found or is inaccessible.');
                 try {
                     configSourcePath = resolve(this.configurationPath, 'app.json');
                     TraceUtils.debug('Validating application configuration source on %s.', configSourcePath);
                     this.config = require(configSourcePath);
                 } catch (err) {
                     if (err.code === 'MODULE_NOT_FOUND') {
-                        TraceUtils.log('The default application configuration cannot be found or is inaccessible.');
+                        TraceUtils.debug('The default application configuration cannot be found or is inaccessible.');
                     } else {
                         TraceUtils.error('An error occurred while trying to open default application configuration.');
                         TraceUtils.error(err);
                     }
                     TraceUtils.debug('Initializing empty configuration');
-                    this.config = {};
+                    this.config = {
+                        settings: {}
+                    };
                 }
             } else {
                 TraceUtils.error('An error occurred while trying to open application configuration.');
                 TraceUtils.error(err);
                 //load default configuration
-                this.config = {};
+                this.config = {
+                    settings: {}
+                };
             }
         }
     }

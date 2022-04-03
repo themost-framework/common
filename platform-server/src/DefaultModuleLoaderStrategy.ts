@@ -46,7 +46,6 @@ class DefaultModuleLoaderStrategy extends ModuleLoaderStrategy {
         }
         return require(resolve(configuration.executionPath, modulePath));
     }
-    
 }
 
 export {

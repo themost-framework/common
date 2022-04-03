@@ -32,7 +32,7 @@ class ConfigurationBase {
     }
 
     get settings(): any {
-        return this.config.settings;
+        return this.config && this.config.settings;
     }
 
     //noinspection JSUnusedGlobalSymbols
