@@ -52,6 +52,7 @@ class LangUtils {
     }
     /**
      * Inherit the prototype methods from one constructor into another.
+     * @deprecated This function is deprecated and is going to be removed at next version. Use ES2015 class syntax and extends keyword instead.
      * @param {Function} ctor
      * @param {Function|*} superCtor
      */
@@ -59,14 +60,6 @@ class LangUtils {
 
         if (typeof superCtor !== 'function' && superCtor !== null) {
             throw new TypeError('Super expression must either be null or a function, not ' + typeof superCtor);
-        }
-
-        //if process is running under node js
-        if (isNode) {
-            const utilModule = 'util';
-            const util = require(utilModule);
-            //call util.inherits() function
-            return util.inherits(ctor, superCtor);
         }
 
         ctor.prototype = Object.create(superCtor && superCtor.prototype, {

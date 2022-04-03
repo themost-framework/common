@@ -1,5 +1,7 @@
 import {LangUtils} from '../src';
 
+
+
 describe('LangUtils', () => {
     it('should use extend', () => {
         const object = {};
