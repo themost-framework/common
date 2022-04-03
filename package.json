@@ -6,7 +6,7 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jasmine",
+    "test": "karma start",
     "build": "rimraf dist && rollup -c ./rollup.config.js"
   },
   "repository": {

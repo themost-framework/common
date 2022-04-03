@@ -671,12 +671,7 @@ class PathUtils {
      * @returns {string}
      */
     // eslint-disable-next-line no-unused-vars
-    static join(...part: string[]) {
-        const pathModule = 'path';
-        if (isNode) {
-            const path = require(pathModule);
-            return path.join.apply(null, Array.prototype.slice.call(arguments));
-        }
+    static join(...part: string[]): string {
         // Split the inputs into a list of path commands.
         let parts: string[] = [];
         let i;
