@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "skipLibCheck": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -12,7 +13,15 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "module": "ESNext",
-        "target": "es5"
+        "target": "es5",
+        "paths": {
+            "@themost/common": [
+                "src/index"
+            ],
+            "@themost/common/platform-server": [
+                "platform-server/src/index"
+            ]
+        }
     },
     "exclude": [
         "node_modules",
