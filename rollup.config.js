@@ -55,6 +55,6 @@ module.exports = [{
         '@themost/common'
     ),
     plugins: [
-        typescript({ tsconfig: './platform-server/tsconfig.json' })
+        typescript({ tsconfig: './platform-server/tsconfig.build.json' })
     ]
 }];

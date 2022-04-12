@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "skipLibCheck": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "declarationMap": true,
+        "declarationDir": ".",
+        "declaration": true,
+        "removeComments": false,
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "module": "ESNext",
+        "target": "es5",
+        "paths": {
+            "@themost/common": [
+                "../dist"
+            ]
+        }
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "spec"
+    ]
+}
