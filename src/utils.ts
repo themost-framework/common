@@ -1,8 +1,10 @@
-// MOST Web Framework Codename ZeroGraviry Copyright (c) 2017-2022, THEMOST LP All rights reserved
+// MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
 import { MD5, SHA1, SHA256 } from 'crypto-js';
 const isNode = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
 
+// noinspection SpellCheckingInspection
 const UUID_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+// noinspection SpellCheckingInspection
 const HEX_CHARS = 'abcdef1234567890';
 const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 
@@ -52,6 +54,7 @@ class LangUtils {
     }
     /**
      * Inherit the prototype methods from one constructor into another.
+     * @deprecated This function is deprecated and is going to be removed at next version. Use ES2015 class syntax and extends keyword instead.
      * @param {Function} ctor
      * @param {Function|*} superCtor
      */
@@ -59,14 +62,6 @@ class LangUtils {
 
         if (typeof superCtor !== 'function' && superCtor !== null) {
             throw new TypeError('Super expression must either be null or a function, not ' + typeof superCtor);
-        }
-
-        //if process is running under node js
-        if (isNode) {
-            const utilModule = 'util';
-            const util = require(utilModule);
-            //call util.inherits() function
-            return util.inherits(ctor, superCtor);
         }
 
         ctor.prototype = Object.create(superCtor && superCtor.prototype, {
@@ -357,7 +352,7 @@ class Args {
             if (err instanceof Error) {
                 throw err;
             }
-            throw new ArgumentError(err, 'ECHECK');
+            throw new ArgumentError(err, 'E_CHECK');
         }
     }
     /**
@@ -367,7 +362,7 @@ class Args {
      */
     static notNull(arg: any, name: string): void {
         if (typeof arg === 'undefined' || arg === null) {
-            throw new ArgumentError(name + ' may not be null or undefined', 'ENULL');
+            throw new ArgumentError(name + ' may not be null or undefined', 'E_NULL');
         }
     }
     /**
@@ -376,7 +371,7 @@ class Args {
      */
     static notString(arg: any, name: string): void {
         if (typeof arg !== 'string') {
-            throw new ArgumentError(name + ' must be a string', 'EARG');
+            throw new ArgumentError(name + ' must be a string', 'E_ARG');
         }
     }
     /**
@@ -385,7 +380,7 @@ class Args {
      */
     static notFunction(arg: any, name: string): void {
         if (typeof arg !== 'function') {
-            throw new ArgumentError(name + ' must be a function', 'EARG');
+            throw new ArgumentError(name + ' must be a function', 'E_ARG');
         }
     }
     /**
@@ -394,7 +389,7 @@ class Args {
      */
     static notNumber(arg: any, name: string): void {
         if ((typeof arg !== 'number') || isNaN(arg)) {
-            throw new ArgumentError(name + ' must be number', 'EARG');
+            throw new ArgumentError(name + ' must be number', 'E_ARG');
         }
     }
     /**
@@ -404,10 +399,10 @@ class Args {
     static notEmpty(arg: any, name: any): void {
         Args.notNull(arg, name);
         if ((Object.prototype.toString.bind(arg)() === '[object Array]') && (arg.length === 0)) {
-            throw new ArgumentError(name + ' may not be empty', 'EEMPTY');
+            throw new ArgumentError(name + ' may not be empty', 'E_EMPTY');
         }
         else if ((typeof arg === 'string') && (arg.length === 0)) {
-            throw new ArgumentError(name + ' may not be empty', 'EEMPTY');
+            throw new ArgumentError(name + ' may not be empty', 'E_EMPTY');
         }
     }
     /**
@@ -417,7 +412,7 @@ class Args {
     static notNegative(arg: any, name: any): void {
         Args.notNumber(arg, name);
         if (arg < 0) {
-            throw new ArgumentError(name + ' may not be negative', 'ENEG');
+            throw new ArgumentError(name + ' may not be negative', 'E_NEGATIVE');
         }
     }
     /**
@@ -427,7 +422,7 @@ class Args {
     static notPositive(arg: any, name: any): void {
         Args.notNumber(arg, name);
         if (arg <= 0) {
-            throw new ArgumentError(name + ' may not be negative or zero', 'EPOS');
+            throw new ArgumentError(name + ' may not be negative or zero', 'E_POSITIVE');
         }
     }
 }
@@ -589,6 +584,7 @@ class RandomUtils {
      */
     static randomChars(length?: number) {
         length = length || 8;
+        // noinspection SpellCheckingInspection
         const chars = 'abcdefghkmnopqursuvwxz2456789ABCDEFHJKLMNPQURSTUVWXYZ';
         let str = '';
         for (let i = 0; i < length; i++) {
@@ -678,12 +674,7 @@ class PathUtils {
      * @returns {string}
      */
     // eslint-disable-next-line no-unused-vars
-    static join(...part: string[]) {
-        const pathModule = 'path';
-        if (isNode) {
-            const path = require(pathModule);
-            return path.join.apply(null, Array.prototype.slice.call(arguments));
-        }
+    static join(...part: string[]): string {
         // Split the inputs into a list of path commands.
         let parts: string[] = [];
         let i;
@@ -988,7 +979,7 @@ class ArgumentError extends TypeError {
     constructor(msg: string, code?: string) {
         super(msg);
         this.message = msg;
-        this.code = code || 'EARG';
+        this.code = code || 'E_ARG';
         if (typeof Error.captureStackTrace === 'function') {
             Error.captureStackTrace(this, this.constructor);
         }

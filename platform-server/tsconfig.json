@@ -8,7 +8,6 @@
         "declarationMap": true,
         "declarationDir": ".",
         "declaration": true,
-        "outDir": "dist",
         "removeComments": false,
         "noImplicitAny": true,
         "moduleResolution": "node",
@@ -16,19 +15,12 @@
         "target": "es5",
         "paths": {
             "@themost/common": [
-                "src/index"
-            ],
-            "@themost/common/platform-server": [
-                "platform-server/src/index"
+                "../src/index"
             ]
         }
     },
-    "include": [
-        "src"
-    ],
     "exclude": [
         "node_modules",
-        "dist",
-        "spec"
+        "dist"
     ]
 }
