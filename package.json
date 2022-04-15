@@ -6,8 +6,8 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "karma start",
-    "test:node": "jasmine",
+    "test:browser": "karma start",
+    "test": "jasmine",
     "build": "rimraf dist && rimraf platform-server/dist && rollup -c ./rollup.config.js"
   },
   "repository": {
