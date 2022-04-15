@@ -7,6 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "karma start",
+    "test:node": "jasmine",
     "build": "rimraf dist && rimraf platform-server/dist && rollup -c ./rollup.config.js"
   },
   "repository": {
@@ -20,7 +21,7 @@
   },
   "homepage": "https://github.com/themost-framework/common#readme",
   "dependencies": {
-    "async": "^2.6.3",
+    "async": "^2.6.4",
     "crypto-js": "^4.1.1",
     "events": "^3.2.0",
     "lodash": "^4.17.20",
