@@ -347,18 +347,17 @@ export interface DataAdapterBase {
     options?:any;
     open(callback:(err?:Error) => void): void;
     openAsync(): Promise<void>;
-
     close(callback:(err?:Error) => void): void;
     closeAsync(): Promise<void>;
-
-    execute(query:any, values:any[], callback:(err?:Error, result?:any) => void): void;
-    executeAsync(query:any, values:any[]): Promise<void>;
-
+    execute(query: any, values: any, callback: (err: Error, result?: any) => void): void;
+    executeAsync(query: any, values: any): Promise<any>;
     selectIdentity(entity:string, attribute:string , callback?:(err?:Error, result?:any) => void): void;
     selectIdentityAsync(entity:string, attribute:string): Promise<void>;
-
     executeInTransaction(func: () => void, callback:(err?:Error) => void): void;
     executeInTransactionAsync(func: () => Promise<void>): Promise<void>;
+    migrate(obj: DataAdapterMigration, callback: (err: Error, result?: any) => void): void;
+    migrateAsync(obj: DataAdapterMigration): Promise<any>;
+    createView(name: string, query: any, callback: (err: Error) => void): void;
 }
 
 
@@ -458,4 +457,65 @@ export interface DataObjectBase {
     getAdditionalObject():Promise<DataContextBase|any>;
     query(attr:string):DataQueryableBase;
 
+}
+
+export declare interface DataAdapterTable {
+    create(fields: Array<any>, callback: (err: Error) => void): void;
+    createAsync(fields: Array<any>): Promise<void>;
+    add(fields: Array<any>, callback: (err: Error) => void): void;
+    addAsync(fields: Array<any>): Promise<void>;
+    change(fields: Array<any>, callback: (err: Error) => void): void;
+    changeAsync(fields: Array<any>): Promise<void>;
+    exists(callback: (err: Error, result: boolean) => void): void;
+    existsAsync(): Promise<boolean>;
+    version(callback: (err: Error, result: string) => void): void;
+    versionAsync(): Promise<string>;
+    columns(callback: (err: Error, result: Array<any>) => void): void;
+    columnsAsync(): Promise<Array<any>>;
+}
+
+export declare interface DataAdapterIndex {
+    name: string;
+    columns: Array<string>;
+}
+
+export declare interface DataAdapterIndexes {
+    create(name: string, columns: Array<string>, callback: (err: Error, res?: number) => void): void;
+    createAsync(name: string, columns: Array<string>): Promise<number>;
+    drop(name: string, callback: (err: Error, res?: number) => void): void;
+    dropAsync(name: string): Promise<number>;
+    list(callback: (err: Error, res: Array<DataAdapterIndex>) => void): void;
+    listAsync(): Promise<Array<DataAdapterIndex>>;
+}
+
+export declare interface DataAdapterView {
+    create(query: any, callback: (err: Error) => void): void;
+    createAsync(query: any): Promise<void>;
+    exists(callback: (err: Error, result: boolean) => void): void;
+    existsAsync(): Promise<boolean>;
+    drop(callback: (err: Error) => void): void;
+    dropAsync(): Promise<void>;
+}
+
+export declare interface DataAdapterDatabase {
+    exists(callback: (err: Error, result: boolean) => void): void;
+    existsAsync(): Promise<boolean>;
+    create(callback: (err: Error) => void): void;
+    createAsync(): Promise<void>;
+}
+
+export declare interface DataAdapterMigration {
+    add: Array<any>;
+    change?: Array<any>;
+    appliesTo: string;
+    version: string;
+    indexes?: Array<{name: string, columns: Array<string>}>;
+    updated: boolean;
+}
+
+export declare interface DataAdapterBaseHelper {
+    table(name: string): DataAdapterTable;
+    view(name: string): DataAdapterView;
+    indexes(name: string): DataAdapterIndexes;
+    database(name: string): DataAdapterDatabase;
 }
