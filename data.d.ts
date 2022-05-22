@@ -347,18 +347,17 @@ export interface DataAdapterBase {
     options?:any;
     open(callback:(err?:Error) => void): void;
     openAsync(): Promise<void>;
-
     close(callback:(err?:Error) => void): void;
     closeAsync(): Promise<void>;
-
-    execute(query:any, values:any[], callback:(err?:Error, result?:any) => void): void;
-    executeAsync(query:any, values:any[]): Promise<void>;
-
+    execute(query: any, values: any, callback: (err: Error, result?: any) => void): void;
+    executeAsync(query: any, values: any): Promise<any>;
     selectIdentity(entity:string, attribute:string , callback?:(err?:Error, result?:any) => void): void;
     selectIdentityAsync(entity:string, attribute:string): Promise<void>;
-
     executeInTransaction(func: () => void, callback:(err?:Error) => void): void;
     executeInTransactionAsync(func: () => Promise<void>): Promise<void>;
+    migrate(obj: DataAdapterMigration, callback: (err: Error, result?: any) => void): void;
+    migrateAsync(obj: DataAdapterMigration): Promise<any>;
+    createView(name: string, query: any, callback: (err: Error) => void): void;
 }
 
 
@@ -514,23 +513,7 @@ export declare interface DataAdapterMigration {
     updated: boolean;
 }
 
-export declare interface DataAdapterBase {
-    constructor(options?: any);
-    formatType(field: any): string;
-    open(callback: (err: Error) => void): void;
-    close(callback: (err: Error) => void): void;
-    openAsync(): Promise<void>;
-    closeAsync(): Promise<void>;
-    prepare(query: any, values?: Array<any>): any;
-    createView(name: string, query: any, callback: (err: Error) => void): void;
-    executeInTransaction(func: any, callback: (err: Error) => void): void;
-    executeInTransactionAsync(func: Promise<any>): Promise<any>;
-    migrate(obj: DataAdapterMigration, callback: (err: Error, result?: any) => void): void;
-    migrateAsync(obj: DataAdapterMigration): Promise<any>;
-    selectIdentity(entity: string, attribute: string, callback: (err: Error, value: any) => void): void;
-    execute(query: any, values: any, callback: (err: Error, value: any) => void): void;
-    executeAsync(query: any, values: any): Promise<any>;
-    executeAsync<T>(query: any, values: any): Promise<Array<T>>;
+export declare interface DataAdapterBaseHelper {
     table(name: string): DataAdapterTable;
     view(name: string): DataAdapterView;
     indexes(name: string): DataAdapterIndexes;
