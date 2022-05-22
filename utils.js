@@ -9,7 +9,7 @@
 ///
 var _ = require('lodash');
 var isNode = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
-var sprintf = require("sprintf").sprintf;
+var sprintf = require("sprintf-js").sprintf;
 var Symbol = require("symbol");
 
 var UUID_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
