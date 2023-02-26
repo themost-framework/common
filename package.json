@@ -1,10 +1,9 @@
 {
   "name": "@themost/common",
-  "version": "2.5.12",
+  "version": "2.7.5",
   "description": "MOST Web Framework Codename Blueshift - Common Module",
   "main": "index.js",
   "types": "index.d.ts",
-  "peerDependencies": {},
   "scripts": {
     "test": "jasmine",
     "typedoc": "typedoc",
@@ -35,7 +34,7 @@
     "@types/node": "^14.14.6",
     "dotenv": "^8.2.0",
     "eslint": "^8.16.0",
-    "jasmine": "^3.6.3",
+    "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^6.0.0",
     "ts-node": "^9.0.0",
     "tslint": "^6.1.3",
