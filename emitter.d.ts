@@ -1,20 +1,7 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
-/**
- * @class
- * @extends EventEmitter
- */
-export declare class SequentialEventEmitter extends EventEmitter {
-    /**
-     * @constructor
-     */
-    constructor();
-    /**
-     * Emits an event by specifying additional arguments where the last argument is a callback function
-     * @param {string | symbol} event
-     * @param args
-     * @returns {any}
-     */
+
+export declare interface SequentialEventEmitterBase {
     emit(event: string | symbol, ...args: any[]): any;
     addListener(event: string | symbol, listener: (...args: any[]) => void): this;
     on(event: string | symbol, listener: (...args: any[]) => void): this;
@@ -30,4 +17,15 @@ export declare class SequentialEventEmitter extends EventEmitter {
     unsubscribe(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this;
     subscribeOnce(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>): this;
     next(event: string | symbol, ...args: any[]): Promise<void>;
+}
+
+/**
+ * @class
+ * @extends EventEmitter
+ */
+export declare class SequentialEventEmitter implements SequentialEventEmitterBase extends EventEmitter {
+    /**
+     * @constructor
+     */
+    constructor();
 }
