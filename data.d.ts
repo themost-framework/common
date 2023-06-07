@@ -340,6 +340,9 @@ export interface DataModelBase extends DataModelProperties {
     update(obj: any | any[]): Promise<any>;
     remove(obj: any | any[]): Promise<any>;
     where(attr: any): DataQueryableBase;
+    upsert(obj: any | Array<any>): Promise<any>;
+    upsert(obj: any | Array<any>, callback: (err?: Error, result?: any) => void): void;
+    upsertAsync(obj: any | Array<any>): Promise<any>;
 }
 
 export interface DataAdapterBase {
@@ -386,7 +389,7 @@ export interface DataQueryableBase {
     equal(value: any): this;
     notEqual(value: any): this;
     greaterThan(value: any): this;
-    greaterOEqual(value: any): this;
+    greaterOrEqual(value: any): this;
     bit(value: any, result?:number): this;
     lowerThan(value: any): this;
     lowerOrEqual(value: any): this;
