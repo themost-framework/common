@@ -1,6 +1,7 @@
 // MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
 import { ApplicationBase } from './app';
 import { ConfigurationBase } from './config';
+import { SequentialEventEmitterBase } from './emitter';
 
 export type Types =
     | 'Float'
@@ -33,53 +34,35 @@ export type Types =
 
 export interface DataAssociationMappingBase {
     associationType?: 'association' | 'junction';
-        associationAdapter?: string;
-        associationObjectField?: string;
-        associationValueField?: string;
-        parentModel?: string;
-        parentField?: string;
-        childModel?: string;
-        childField?: string;
-        cascade?: 'delete' | 'none';
-        options?: {
-            /**
-             * The $orderby system query option specifies the order in which items are returned from the service. e.g. $orderby=dateCreated desc
-             */
-            $orderby?: string;
-            /**
-             * The $select system query option requests that the service return only the properties, dynamic properties requested by the client e.g. $select=id,name,dateCreated
-             */
-            $select?: string;
-            /**
-             * The set of expanded entities can be further refined through the application of expand options, expressed as a semicolon-separated list of system query options.
-             */
-            $expand?: string;
-            /**
-             * The value of the $levels system query option is a positive integer to specify the number of levels to expand e.g. $levels=2
-             */
-            $levels?: string;
-            [k: string]: unknown;
-        };
-        privileges?: {
-            /**
-             * A number which represents permission mask (1=Read, 2=Create, 4=Update, 8=Delete, 16=Execute)
-             */
-            mask: number;
-            /**
-             * A string which represents the permission scope.
-             */
-            type: 'self' | 'global' | 'parent' | 'item';
-            /**
-             * A string which represents the name of the security group where this privilege will be applied e.g. Administrators, Sales etc.
-             */
-            account?: string;
-            /**
-             * A string which represents a filter expression for this privilege. This attribute is used for self privileges which are commonly derived from user's attributes e.g. 'owner eq me()' or 'orderStatus eq 1 and customer eq me()' etc.
-             */
-            filter?: string;
-            [k: string]: unknown;
-        }[];
+    associationAdapter?: string;
+    associationObjectField?: string;
+    associationValueField?: string;
+    parentModel?: string;
+    parentField?: string;
+    childModel?: string;
+    childField?: string;
+    cascade?: 'delete' | 'none';
+    options?: {
+        /**
+         * The $orderby system query option specifies the order in which items are returned from the service. e.g. $orderby=dateCreated desc
+         */
+        $orderby?: string;
+        /**
+         * The $select system query option requests that the service return only the properties, dynamic properties requested by the client e.g. $select=id,name,dateCreated
+         */
+        $select?: string;
+        /**
+         * The set of expanded entities can be further refined through the application of expand options, expressed as a semicolon-separated list of system query options.
+         */
+        $expand?: string;
+        /**
+         * The value of the $levels system query option is a positive integer to specify the number of levels to expand e.g. $levels=2
+         */
+        $levels?: string;
         [k: string]: unknown;
+    };
+    privileges?: DataModelPrivilegeBase[];
+    [k: string]: unknown;
 }
 
 export interface DataFieldBase {
@@ -159,6 +142,7 @@ export interface DataFieldBase {
      * A string which defines the multiplicity level of an association between two objects
      */
     multiplicity?: 'ZeroOrOne' | 'Many' | 'One' | 'Unknown',
+
     mapping?: DataAssociationMappingBase;
     /**
      * Defines a data validator for this attribute
@@ -206,6 +190,9 @@ export interface DataFieldBase {
         validator?: string;
         [k: string]: unknown;
     };
+
+    virtual?: boolean;
+
     [k: string]: unknown;
 }
 
@@ -249,6 +236,10 @@ export interface DataModelPrivilegeBase {
      * A string which represents a filter expression for this privilege. This attribute is used for self privileges which are commonly derived from user's attributes e.g. 'owner eq me()' or 'orderStatus eq 1 and customer eq me()' etc.
      */
     filter?: string;
+    /**
+     * An array of OAuth2 client scopes as described here https://oauth.net/2/scope/. If current context does not have any of the provided scopes this privilege will be excluded. This option may be used in OAuth2 authorized environments or in any environment which implements such protocols.
+     */
+    scope?: string[];
     [k: string]: unknown;
 }
 
@@ -315,12 +306,13 @@ export interface DataModelProperties {
     privileges?: DataModelPrivilegeBase[];
 }
 
-export interface DataModelBase extends DataModelProperties {
+export interface DataModelBase extends DataModelProperties, SequentialEventEmitterBase {
     get context(): DataContextBase;
     set context(value: DataContextBase);
     asQueryable(): DataQueryableBase;
     base(): DataModelBase;
     clone(): DataModelBase;
+    convert<T>(obj: any): T;
     find(obj: any):DataQueryableBase;
     getAttribute(name: string): DataFieldBase;
     getDataObjectType<T>(): new (...args: any) => T;
@@ -332,14 +324,16 @@ export interface DataModelBase extends DataModelProperties {
     inferState(obj: any, callback: (err?: Error, res?: any) => void): void;
     inferStateAsync(obj: any): Promise<any>;
     insert(obj: any | any[]): Promise<any>;
+    silent(value?: boolean): DataModel;
     isSilent(): boolean;
-    migrate: ((err?: Error, result?: any) => void);
-    migrateAsync(): Promise<void>;
+    migrate(callback: (err?: Error, res?: boolean) => void): void;
+    migrateAsync(): Promise<boolean>;
     save(obj: any | any[]): Promise<any>;
     silent(value?: boolean): this;
     update(obj: any | any[]): Promise<any>;
     remove(obj: any | any[]): Promise<any>;
-    where(attr: any): DataQueryableBase;
+    where(attr: string): DataQueryableBase;
+    where<T>(expr: (value: T, ...param: any) => any, params?: any): DataQueryableBase;
     upsert(obj: any | Array<any>): Promise<any>;
     upsert(obj: any | Array<any>, callback: (err?: Error, result?: any) => void): void;
     upsertAsync(obj: any | Array<any>): Promise<any>;
@@ -376,10 +370,17 @@ export interface DataContextBase {
 
 }
 
+export interface ListResult<T> {
+    total?: number;
+    skip?: number;
+    value?: T[];
+}
+
 export interface DataQueryableBase {
     readonly model: DataModelBase;
     clone(): DataQueryableBase;
-    where(attr: any): this;
+    where(attr: string): this;
+    where<T>(expr: (value: T, ...param: any) => any, params?: any): this;
     search(text: string): this;
     join(model: any): this;
     and(attr: any): this;
@@ -398,21 +399,28 @@ export interface DataQueryableBase {
     contains(value: any): this;
     notContains(value: any): this;
     between(value1: any, value2: any): this;
+    select<T>(expr: (value: T, ...param: any) => any, params?: any): this;
+    select<T,J>(expr: (value1: T, value2: J, ...param: any) => any, params?: any): this;
     select(...attr: any[]): this;
     orderBy(attr: any): this;
+    orderBy<T>(expr: (value: T) => any): this;
     orderByDescending(attr: any): this;
+    orderByDescending<T>(expr: (value: T) => any): this;
     thenBy(attr: any): this;
+    thenBy<T>(expr: (value: T) => any): this;
     thenByDescending(attr: any): this;
+    thenByDescending<T>(expr: (value: T) => any): this;
     groupBy(...attr: any[]): this;
+    groupBy<T>(...args: [...expr:[(value: T) => any], params?: any]): this;
     skip(n:number): this;
     take(n:number): this;
-    getItem(): Promise<any>;
-    getItems(): Promise<any[]>;
+    getItem<T>(): Promise<T>;
+    getItems<T>(): Promise<T[]>;
     getTypedItem<T>(): Promise<T>;
     getTypedItems<T>(): Promise<T[]>;
-    getList(): Promise<any>;
-    getTypedList(): Promise<any>;
-    getAllItems(): Promise<any[]>;
+    getList<T>(): Promise<ListResult<T>>;
+    getTypedList<T>(): Promise<ListResult<T>>;
+    getAllItems<T>(): Promise<T[]>;
     count(): Promise<number>;
     value(): Promise<any>;
     min(): Promise<any>;
@@ -421,6 +429,7 @@ export interface DataQueryableBase {
     silent(value?: boolean): this;
     cache(value?: boolean): this;
     expand(...attr: any[]): this;
+    expand<T>(...args: [...expr:[(value: T) => any], params?: any]): this;
     add(x: any): this;
     subtract(x: any): this;
     multiply(x: any): this;
@@ -446,6 +455,7 @@ export interface DataQueryableBase {
     toUpperCase(): this;
     toLocaleUpperCase(): this;
     levels(n:number): this;
+    toExpand(): string;
 }
 
 export interface DataObjectBase {
