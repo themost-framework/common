@@ -339,7 +339,7 @@ export interface DataModelBase extends DataModelProperties, SequentialEventEmitt
     inferState(obj: any, callback: (err?: Error, res?: any) => void): void;
     inferStateAsync(obj: any): Promise<any>;
     insert(obj: any | any[]): Promise<any>;
-    silent(value?: boolean): DataModel;
+    silent(value?: boolean): this;
     isSilent(): boolean;
     migrate(callback: (err?: Error, res?: boolean) => void): void;
     migrateAsync(): Promise<boolean>;
