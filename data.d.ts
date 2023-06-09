@@ -32,6 +32,21 @@ export type Types =
     | 'AbsoluteURI'
     | 'RelativeURI';
 
+export declare interface ContextUserBase {
+
+    name?: string;
+
+    authenticationType?: string;
+
+    authenticationToken?: string;
+
+    authenticationProviderKey?: any;
+
+    authenticationScope?: any;
+
+    [k: string]: unknown;
+}
+
 export interface DataAssociationMappingBase {
     associationType?: 'association' | 'junction';
     associationAdapter?: string;
@@ -361,6 +376,7 @@ export interface DataAdapterBase {
 export interface DataContextBase {
     db?: DataAdapterBase;
     application?: ApplicationBase;
+    user?: ContextUserBase;
 
     model(name:any): DataModelBase;
     getConfiguration(): ConfigurationBase;
