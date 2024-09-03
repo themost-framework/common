@@ -103,6 +103,9 @@ export declare class Guid {
      * @returns {boolean}
      */
     static isGuid(s: string): boolean;
+
+    static from(value: any): Guid;
+
     /**
      * @returns {Guid}
      */

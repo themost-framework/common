@@ -12,6 +12,7 @@ var isNode = Object.prototype.toString.call(typeof process !== 'undefined' ? pro
 var sprintf = require("sprintf-js").sprintf;
 var Symbol = require("symbol");
 
+// eslint-disable-next-line no-unused-vars
 var UUID_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 var HEX_CHARS = 'abcdef1234567890';
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
@@ -26,6 +27,8 @@ var IntegerRegex =/^[-+]?\d+$/g;
 var FloatRegex =/^[+-]?\d+(\.\d+)?$/g;
 var GuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
+var uuid = require('uuid');
+var MD5 = require('crypto-js/md5');
 /**
  * @class
  * @constructor
@@ -562,23 +565,7 @@ function TextUtils() {
      * @returns {string}
      */
     TextUtils.newUUID = function() {
-        var chars = UUID_CHARS;
-        var uuid = [];
-        // rfc4122, version 4 form
-        var r = void 0;
-        // rfc4122 requires these characters
-        uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
-        uuid[14] = "4";
-
-        // Fill in random data.  At i==19 set the high bits of clock sequence as
-        // per rfc4122, sec. 4.1.5
-        for (var i = 0; i < 36; i++) {
-            if (!uuid[i]) {
-                r = 0 | Math.random() * 16;
-                uuid[i] = chars[i === 19 ? r & 0x3 | 0x8 : r];
-            }
-        }
-        return uuid.join("");
+        return uuid.v4();
     };
 
     var loggerProperty = Symbol("logger");
@@ -1100,7 +1087,18 @@ function Guid(value) {
         this[valueProperty] = test;
         return;
     }
-    this[valueProperty] = TextUtils.newUUID();
+    this[valueProperty] = uuid.v4();
+}
+
+Guid.from = function(value) {
+    var str = MD5(value).toString();
+    return new Guid([
+        str.substring(0, 8),
+        str.substring(8, 12),
+        str.substring(12, 16),
+        str.substring(16, 20),
+        str.substring(20, 32)
+    ].join('-'));
 }
 
 Guid.prototype.toJSON = function() {
