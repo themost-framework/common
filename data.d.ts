@@ -200,7 +200,7 @@ export interface DataFieldBase {
          */
         type?: Types | string;
         /**
-         * A string which represetns the module path that exports a custom validator e.g. ./validators/custom-validator.js
+         * A string which represents the module path that exports a custom validator e.g. ./validators/custom-validator.js
          */
         validator?: string;
         [k: string]: unknown;
@@ -322,8 +322,7 @@ export interface DataModelProperties {
 }
 
 export interface DataModelBase extends DataModelProperties, SequentialEventEmitterBase {
-    get context(): DataContextBase;
-    set context(value: DataContextBase);
+    context?: DataContextBase;
     asQueryable(): DataQueryableBase;
     base(): DataModelBase;
     clone(): DataModelBase;

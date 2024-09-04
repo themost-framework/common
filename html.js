@@ -41,7 +41,7 @@ function HtmlWriter() {
     this.buffer = '';
     /**
      * @private
-     * @type {Integer}
+     * @type {boolean}
      */
     this.indent = true;
 }
@@ -59,7 +59,7 @@ HtmlWriter.prototype.writeAttribute = function(name, value)
 };
 // noinspection JSUnusedGlobalSymbols
 /**
- * Writes an array of attributes to the output buffer. This attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
+ * Writes an array of attributes to the output buffer. These attributes are going to be rendered after writeBeginTag or WriteFullBeginTag function call.
  * @param {Array|Object} obj - An array of attributes or an object that represents an array of attributes
  * @returns {HtmlWriter}
  */
@@ -75,7 +75,7 @@ HtmlWriter.prototype.writeAttributes = function(obj)
     else {
         for (var prop in obj)
         {
-            if (obj.hasOwnProperty(prop)) {
+            if (Object.prototype.hasOwnProperty.call(obj, prop)) {
                 if (obj[prop]!==null) {
                     this.bufferedAttributes.push( { name:prop, value:obj[prop] } );
                 }

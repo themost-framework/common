@@ -9,6 +9,9 @@
     "typedoc": "typedoc",
     "doc": "typedoc --disableOutputCheck --hideInPageTOC  --toc --entryDocument index.md  index.d.ts"
   },
+  "engines": {
+    "node": ">=12.22.12"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/themost-framework/themost.git"
@@ -38,6 +41,7 @@
     "@types/uuid": "^10.0.0",
     "dotenv": "^8.2.0",
     "eslint": "^8.42.0",
+    "eslint-plugin-node": "^11.1.0",
     "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^6.0.0",
     "ts-node": "^9.0.0",

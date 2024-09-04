@@ -24,7 +24,7 @@ function IApplication(configPath) {
 }
 
 /**
- * Registers an application strategy e.g. an singleton service which to be used in application contextr
+ * Registers an application strategy e.g. a singleton service which to be used in application context
  * @param {Function} serviceCtor
  * @param {Function} strategyCtor
  * @returns IApplication
