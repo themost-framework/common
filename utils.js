@@ -1097,7 +1097,7 @@ Guid.from = function(value) {
         str.substring(8, 12),
         str.substring(12, 16),
         str.substring(16, 20),
-        str.substring(20, 32)
+        str.substring(20, 36)
     ].join('-'));
 }
 
