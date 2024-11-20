@@ -1,4 +1,4 @@
-var Errors = exports.Errors = [{
+const Errors = [{
     statusCode: 400,
     title: "Bad Request",
     message: "The request cannot be fulfilled due to bad syntax."
@@ -96,6 +96,6 @@ var Errors = exports.Errors = [{
     message: "The server is currently unavailable (because it is overloaded or down for maintenance)."
 }];
 
-if (typeof exports !== 'undefined') {
-    module.exports.Errors = Errors;
+export {
+    Errors
 }

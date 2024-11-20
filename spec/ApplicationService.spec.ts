@@ -1,5 +1,5 @@
-import {ApplicationService, ApplicationBase, ApplicationServiceConstructor} from '../app';
-import {ConfigurationBase} from '../config';
+import {ApplicationService, ApplicationBase, ApplicationServiceConstructor} from '@themost/common';
+import {ConfigurationBase} from '@themost/common';
 class SampleService extends ApplicationService {
     constructor(app: any) {
         super(app);

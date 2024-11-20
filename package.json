@@ -1,42 +1,38 @@
 {
   "name": "@themost/common",
   "version": "2.11.0",
-  "description": "MOST Web Framework Codename Blueshift - Common Module",
+  "description": "@themost-framework Codename Zero Gravity Common Library",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "jasmine",
-    "typedoc": "typedoc",
-    "doc": "typedoc --disableOutputCheck --hideInPageTOC  --toc --entryDocument index.md  index.d.ts"
+    "test": "jasmine"
   },
   "engines": {
     "node": ">=12.22.12"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/themost-framework/themost.git"
+    "url": "git+https://github.com/themost-framework/common.git"
   },
   "author": "Kyriakos Barbounakis <k.barbounakis@gmail.com>",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/themost-framework/themost/issues"
+    "url": "https://github.com/themost-framework/common/issues"
   },
-  "homepage": "https://github.com/themost-framework/themost#readme",
+  "homepage": "https://github.com/themost-framework/common#readme",
   "dependencies": {
     "async": "^2.6.4",
-    "blueimp-md5": "^2.7.0",
     "crypto-js": "^4.2.0",
-    "es6-promise": "^4.2.8",
     "events": "^3.2.0",
-    "hashmap": "^2.3.0",
+    "htmlfy": "^0.3.2",
     "lodash": "^4.17.21",
-    "sprintf-js": "^1.1.2",
-    "symbol": "^0.3.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/async": "^3.2.24",
     "@types/crypto-js": "^4.2.2",
     "@types/jasmine": "^3.6.0",
+    "@types/lodash": "^4.17.13",
     "@types/node": "^14.14.6",
     "@types/uuid": "^10.0.0",
     "dotenv": "^8.2.0",
@@ -45,8 +41,6 @@
     "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^6.0.0",
     "ts-node": "^9.0.0",
-    "typedoc": "^0.22.15",
-    "typedoc-plugin-markdown": "^3.6.0",
     "typescript": "^4.0.5"
   }
 }
