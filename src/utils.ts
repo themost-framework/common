@@ -520,6 +520,9 @@ class TraceUtils {
     static format(format: string)  {
         TraceUtils._logger.options.format = format;
     }
+    static colors(useColors: boolean) {
+        TraceUtils._logger.options.colors = useColors;
+    }
     /**
      * @static
      * @param {...*} args
@@ -667,14 +670,26 @@ class PathUtils {
      * @param {...string} part
      * @returns {string}
      */
-    // eslint-disable-next-line no-unused-vars
+    /**
+     * Joins all given path segments together using a forward slash (`/`) as a separator,
+     * then normalizes the resulting path.
+     *
+     * @param {...string[]} part - The path segments to join.
+     * @returns {string} The normalized joined path.
+     *
+     * @remarks
+     * This method removes any leading or trailing slashes and resolves `.` and `..` segments.
+     * If the resulting path is empty, it returns `.`.
+     */
     static join(...part: string[]): string {
         // Split the inputs into a list of path commands.
         let parts: string[] = [];
-        let i;
-        let l;
-        for (i = 0, l = arguments.length; i < l; i++) {
-            parts = parts.concat(arguments[i].split('/'));
+        let i: number;
+        let l: number;
+        for (const argument of part) {
+            const args = argument.split('/');
+            parts = parts.concat(...args);
+            
         }
         // Interpret the path commands to get the new resolved path.
         const newParts = [];
@@ -700,20 +715,18 @@ class PathUtils {
     }
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const Reset = '\x1b[0m';
 const FgBlack = '\x1b[30m';
 const FgRed = '\x1b[31m';
 const FgGreen = '\x1b[32m';
-// eslint-disable-next-line no-unused-vars
 const FgYellow = '\x1b[33m';
 const FgBlue = '\x1b[34m';
 const FgMagenta = '\x1b[35m';
-// eslint-disable-next-line no-unused-vars
 const FgCyan = '\x1b[36m';
-// eslint-disable-next-line no-unused-vars
 const FgWhite = '\x1b[37m';
-
 const Bold = '\x1b[1m';
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 declare interface LogLevelIndexer {
     [key: string]: number;
@@ -793,13 +806,13 @@ class TraceLogger {
      * @param {...*} args
      */
     log(...args: any) {
-        return this.write.apply(this, ['info'].concat(args));
+        return this.write('info', ...args);
     }
     /**
      * @param {...*} args
      */
     info(...args: any) {
-        return this.write.apply(this, ['info'].concat(args));
+        return this.write('info', ...args);
     }
     /**
      * @param {...*} args
@@ -811,28 +824,40 @@ class TraceLogger {
      * @param {...*} args
      */
     warn(...args: any) {
-        return this.write.apply(this, ['warn'].concat(args));
+        return this.write('warn', ...args);
     }
     /**
      * @param {...*} args
      */
     verbose(...args: any) {
-        return this.write.apply(this, ['verbose'].concat(args));
+        return this.write('verbose', ...args);
     }
     /**
      * @param {...*} args
      */
     debug(...args: any) {
-        return this.write.apply(this, ['debug'].concat(args));
+        return this.write('debug', ...args);
     }
+
+    protected getLevelColor(level: string): string {
+        if (!this.options.colors) {
+            return '';
+        }
+        if (Object.prototype.hasOwnProperty.call(LogLevelColors, level)) {
+            return '';
+        }
+        return LogLevelColors[level];
+    }
+
     write(level: string, ...args: any) {
         if (LogLevels[level] > LogLevels[this.options.level]) {
             return;
         }
+        const setColor = this.getLevelColor(level);
         // tslint:disable-next-line:no-console
         const log = (level === 'error') ? console.error : console.log
         if (this.options.format === 'json') {
-            return log.call(console, JSON.stringify([
+            return log(setColor + JSON.stringify([
                 timestamp(),
                 level.toUpperCase()
             ].concat(args), (key, value: any) => {
@@ -858,7 +883,8 @@ class TraceLogger {
                 return value;
             }));
         }
-        log.apply(console, [
+        log(...[
+            setColor,
             timestamp(),
             '[' + level.toUpperCase() + ']'
         ].concat(args).map((arg0: any) => {
