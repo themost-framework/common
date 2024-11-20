@@ -524,53 +524,47 @@ class TraceUtils {
      * @static
      * @param {...*} args
      */
-    // eslint-disable-next-line no-unused-vars
     static log(...args: any) {
-        TraceUtils._logger.log.apply(TraceUtils._logger, args);
+        TraceUtils._logger.log(...args);
     }
     /**
      * @static
      * @param {...*} args
      */
-    // eslint-disable-next-line no-unused-vars
     static error(...args: any) {
-        TraceUtils._logger.error.apply(TraceUtils._logger, args);
+        TraceUtils._logger.error(...args);
     }
     /**
      *
      * @static
      * @param {...*} args
      */
-    // eslint-disable-next-line no-unused-vars
     static info(...args: any) {
-        TraceUtils._logger.info.apply(TraceUtils._logger, args);
+        TraceUtils._logger.info(...args);
     }
     /**
      *
      * @static
      * @param {*} args
      */
-    // eslint-disable-next-line no-unused-vars
     static warn(...args: any) {
-        TraceUtils._logger.warn.apply(TraceUtils._logger, args);
+        TraceUtils._logger.warn(...args);
     }
     /**
      *
      * @static
      * @param {*} args
      */
-    // eslint-disable-next-line no-unused-vars
     static verbose(...args: any) {
-        TraceUtils._logger.verbose.apply(TraceUtils._logger, args);
+        TraceUtils._logger.verbose(...args);
     }
     /**
      *
      * @static
      * @param {...*} args
      */
-    // eslint-disable-next-line no-unused-vars
     static debug(...args: any) {
-        TraceUtils._logger.debug.apply(TraceUtils._logger, args);
+        TraceUtils._logger.debug(...args);
     }
 }
 
@@ -811,7 +805,7 @@ class TraceLogger {
      * @param {...*} args
      */
     error(...args: any) {
-        return this.write.apply(this, ['error'].concat(args));
+        return this.write('error', ...args);
     }
     /**
      * @param {...*} args
@@ -940,7 +934,7 @@ class Guid {
     }
 
     static from(value: any): Guid {
-        var str = MD5(value).toString();
+        const str = MD5(value).toString();
         return new Guid([
             str.substring(0, 8),
             str.substring(8, 12),
