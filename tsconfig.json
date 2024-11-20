@@ -1,31 +1,33 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "baseUrl": ".",
-        "skipLibCheck": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "sourceMap": true,
-        "declarationMap": true,
-        "declarationDir": ".",
-        "declaration": true,
-        "outDir": "dist",
-        "removeComments": false,
-        "noImplicitAny": true,
-        "moduleResolution": "node",
+        "outDir": "./dist/",
+        "target": "ES2015",
         "module": "ESNext",
-        "target": "es5",
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "declaration": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declarationDir": "./dist/",
+        "lib": [
+            "DOM",
+            "ES2017"
+        ],
         "paths": {
             "@themost/common": [
-                "src/index"
+                "./src/index"
             ]
         }
     },
     "include": [
-        "src"
+        "src/**/*.ts",
+        "src/**/*.d.ts"
     ],
     "exclude": [
         "node_modules",
-        "dist",
-        "spec"
+        "src/**/*.spec.ts"
     ]
 }

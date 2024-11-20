@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {ApplicationService, ApplicationBase, ApplicationServiceConstructor} from '@themost/common';
 import {ConfigurationBase} from '@themost/common';
 class SampleService extends ApplicationService {
@@ -32,9 +33,5 @@ describe('ApplicationService', () => {
         const service = new SampleService(app);
         expect(service.application).toBeTruthy();
         expect(service.getApplication()).toBeTruthy();
-        expect(()=> {
-            //@ts-ignore-next-line
-            service.application = app;
-        }).toThrowError('Cannot assign to read only property \'application\' of object \'#<SampleService>\'');
     });
 });

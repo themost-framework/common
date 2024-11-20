@@ -5,6 +5,8 @@ test-context.js
 tslint.json
 tsconfig.json
 tsconfig.spec.json
+jest.config.js
+jest.setup.js
 
 # eslint
 .eslintrc

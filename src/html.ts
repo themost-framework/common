@@ -1,7 +1,6 @@
 // MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
 
 import { escape } from 'lodash';
-import { prettify } from 'htmlfy';
 const HTML_START_CHAR = '<';
 const HTML_END_CHAR = '>';
 const HTML_FULL_END_STRING = ' />';
@@ -190,7 +189,7 @@ class HtmlWriter {
     }
 
     protected static format(buffer: string): string {
-        return prettify(buffer);
+        return buffer;
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -195,6 +195,10 @@ class SequentialEventEmitter extends EventEmitter implements SequentialEventEmit
                     // remove listener and break
                     this.removeListener(event, item);
                     break;
+                } else if (item._listener && item._listener._listener === asyncListener) {
+                    // remove listener and break
+                    this.removeListener(event, item);
+                    break;
                 }
             }
         }

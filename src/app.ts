@@ -81,9 +81,8 @@ interface IApplicationService {
  *
  * @class
  */
-// eslint-disable-next-line no-unused-vars
 class ApplicationService implements IApplicationService {
-    private _application: ApplicationBase;
+    private readonly _application: ApplicationBase;
 
     constructor(app: ApplicationBase) {
         if (this.constructor === ApplicationService.prototype.constructor) {

@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "declaration": false,
         "target": "ESNext",
         "module": "CommonJS",
@@ -16,7 +17,7 @@
         ],
         "paths": {
             "@themost/common": [
-                "src/index"
+                "./src/index"
             ]
         }
     },
