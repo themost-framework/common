@@ -2,13 +2,15 @@
   "name": "@themost/common",
   "version": "2.11.0",
   "description": "@themost-framework Codename Zero Gravity Common Library",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "build": "rimraf dist && rollup -c ./rollup.config.js"
   },
   "engines": {
-    "node": ">=12.22.12"
+    "node": ">=18.20.15"
   },
   "repository": {
     "type": "git",
@@ -29,6 +31,8 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@rollup/plugin-typescript": "^8.2.5",
     "@types/async": "^3.2.24",
     "@types/crypto-js": "^4.2.2",
     "@types/jasmine": "^3.6.0",
@@ -36,11 +40,13 @@
     "@types/node": "^14.14.6",
     "@types/uuid": "^10.0.0",
     "dotenv": "^8.2.0",
-    "eslint": "^8.42.0",
-    "eslint-plugin-node": "^11.1.0",
+    "eslint": "^9.15.0",
     "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^6.0.0",
+    "rimraf": "^6.0.1",
+    "rollup": "^2.58.0",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.5"
+    "typescript": "^4.9.5",
+    "typescript-eslint": "^8.15.0"
   }
 }

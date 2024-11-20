@@ -8,6 +8,7 @@ tsconfig.spec.json
 
 # eslint
 .eslintrc
+eslint.config.mjs
 
 # build
 rollup.config.js
