@@ -6,6 +6,9 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
     {
         ignores: [
+            "node_modules",
+            "dist",
+            "rollup.config.js",
             "spec/helpers/*",
             "jest.config.js",
             "jest.setup.js",

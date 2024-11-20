@@ -11,7 +11,7 @@
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declarationDir": "./dist/",
+        "declarationDir": ".",
         "lib": [
             "DOM",
             "ES2017"

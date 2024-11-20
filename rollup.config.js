@@ -6,7 +6,7 @@ module.exports = [{
     output: [
         {
             name: '@themost/common',
-            file: 'dist/index.cjs.js',
+            file: 'dist/index.js',
             format: 'cjs',
             sourcemap: true
         },
