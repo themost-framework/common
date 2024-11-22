@@ -29,16 +29,14 @@ declare interface SequentialEventEmitterBase {
  * Wraps an async listener and returns a callback-like function
  * @param {function(...*):Promise<void>} asyncListener
  */
-function wrapAsyncListener(asyncListener: (...arg: any) => Promise<void>) {
+function wrapAsyncListener(asyncListener: (...args: any[]) => Promise<void>) {
     /**
      * @this SequentialEventEmitter
      */
-    const result = function() {
-        // get arguments without callback
-        const args = [].concat(Array.prototype.slice.call(arguments, 0, arguments.length -1));
+    const result = function(...args: any[]) {
         // get callback
-        const callback = arguments[arguments.length - 1];
-        return asyncListener.apply(this, args).then(() => {
+        const callback = args.pop();
+        return asyncListener(...args).then(() => {
             return callback();
         }).catch((err: Error) => {
             return callback(err);
@@ -53,22 +51,20 @@ function wrapAsyncListener(asyncListener: (...arg: any) => Promise<void>) {
     return result;
 }
 
-function wrapOnceListener(listener: (...arg: any[]) => void) {
+function wrapOnceListener(listener: (...args: any[]) => void) {
     /**
      * @this SequentialEventEmitter
      */
-    const result = function() {
-        // get arguments without callback
-        const args = Array.from(arguments);
+    const result = function(...args: any[]) {
         // get callback
         const callback = args.pop();
         args.push((err?: Error) => {
             Object.assign(listener, {
                 fired: true
-            });
+            } as FiredListener);
             return callback(err);
         });
-        return listener.apply(this, args);
+        return listener(...args);
     }
     // set async listener property in order to have an option to unsubscribe
     Object.defineProperty(result, '_listener', {
@@ -84,25 +80,23 @@ function wrapOnceListener(listener: (...arg: any[]) => void) {
  * @param {string} event
  * @param {function(...*):Promise<void>} asyncListener
  */
-function wrapOnceAsyncListener(event: string | symbol, asyncListener: (...arg: any) => Promise<void>) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function wrapOnceAsyncListener(event: string | symbol, asyncListener: (...args: any[]) => Promise<void>) {
     /**
      * @this SequentialEventEmitter
      */
-    const result = function() {
+    const result = function(...args: any[]) {
         // tslint:disable-next-line:no-arg
         const callee = arguments.callee;
-        // get arguments without callback
-        const args = [].concat(Array.prototype.slice.call(arguments, 0, arguments.length -1));
         // get callback
-        const callback = arguments[arguments.length - 1];
-        const self = this;
-        return asyncListener.apply(self, args).then(() => {
+        const callback = args.pop();
+        return asyncListener(...args).then(() => {
             // manually remove async listener
-            self.removeListener(event, callee);
+            this.removeListener(event, callee);
             return callback();
         }).catch((err: Error) => {
             // manually remove async listener
-            self.removeListener(event, callee);
+            this.removeListener(event, callee);
             return callback(err);
         });
     }
@@ -129,7 +123,6 @@ class SequentialEventEmitter extends EventEmitter implements SequentialEventEmit
      * @param {String} event - The event that is going to be executed.
      * @param {...*} args - An object that contains the event arguments.
      */
-    // eslint-disable-next-line no-unused-vars
     emit(event: string | symbol, ...args: any[]): any {
         //ensure callback
         //get listeners
@@ -138,7 +131,7 @@ class SequentialEventEmitter extends EventEmitter implements SequentialEventEmit
         }
         const listeners: any = this.listeners(event);
 
-        const argsAndCallback = [].concat(Array.prototype.slice.call(arguments, 1));
+        const argsAndCallback = args;
         if (argsAndCallback.length > 0) {
             //check the last argument (expected callback function)
             if (typeof argsAndCallback[argsAndCallback.length - 1] !== 'function') {
@@ -219,15 +212,12 @@ class SequentialEventEmitter extends EventEmitter implements SequentialEventEmit
      * @param {string} event
      * @param {...args} args
      */
-    // eslint-disable-next-line no-unused-vars
     next(event: string | symbol, ...args: any[]): Promise<void> {
-        const self = this;
         /**
          * get arguments as array
          * @type {*[]}
          */
-        const argsAndCallback: any[] = [event].concat(Array.prototype.slice.call(arguments, 1));
-        // eslint-disable-next-line no-undef
+        const argsAndCallback: any[] = args.slice();
         return new Promise((resolve, reject) => {
             // set callback
             argsAndCallback.push((err: Error) => {
@@ -237,7 +227,7 @@ class SequentialEventEmitter extends EventEmitter implements SequentialEventEmit
                 return resolve();
             });
             // emit event
-            self.emit.apply(self, argsAndCallback);
+            this.emit(event, ...argsAndCallback);
         });
     }
     once(event: string | symbol, listener: (...args: any[]) => void): this {

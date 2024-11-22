@@ -4,6 +4,7 @@ import { at as _at, set as _set} from 'lodash';
 import { Args } from './utils';
 import { AbstractClassError } from './errors';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare interface WindowEnv {
     env?: {
         BROWSER_ENV?: string;
@@ -11,6 +12,7 @@ declare interface WindowEnv {
 }
 
 // tslint:disable-next-line:ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 declare type StrategyConstructor<T> = Function & { prototype: T };
 
 /**
@@ -117,7 +119,7 @@ class ConfigurationStrategy {
     /**
      * @returns {ConfigurationBase}
      */
-    getConfiguration() {
+    getConfiguration(): ConfigurationBase {
         return this._config;
     }
 }

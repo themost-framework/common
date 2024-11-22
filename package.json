@@ -7,6 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
+    "lint": "eslint src",
     "build": "rimraf dist && rollup -c ./rollup.config.js"
   },
   "engines": {

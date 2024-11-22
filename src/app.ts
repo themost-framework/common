@@ -33,6 +33,7 @@ interface IApplication {
 
 
 // tslint:disable-next-line:ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 declare type ApplicationServiceConstructor<T> = Function & { prototype: T };
 
 interface IApplicationService {
@@ -50,7 +51,7 @@ interface IApplicationService {
  * @param {string=} configPath
  */
  abstract class ApplicationBase implements IApplication {
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     constructor(_configurationPath: string) {
         if (this.constructor === ApplicationBase.prototype.constructor) {
             throw new AbstractClassError();
