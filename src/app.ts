@@ -1,5 +1,4 @@
-// MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
-
+// @themost-ramework Codename Centroid Copyright (c) 2017-2025, THEMOST LP All rights reserved
 import { AbstractMethodError } from './errors';
 import { AbstractClassError } from './errors';
 import { ConfigurationBase } from './config';
@@ -31,16 +30,13 @@ interface IApplication {
     getConfiguration(): ConfigurationBase;
 }
 
-
-// tslint:disable-next-line:ban-types
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-declare type ApplicationServiceConstructor<T> = Function & { prototype: T };
+declare type ApplicationServiceConstructor<T> = {
+    new (app: ApplicationBase): T;
+};
 
 interface IApplicationService {
-    /**
-     * Gets the application of this service
-     * @returns {ApplicationBase}
-     */
+
+    readonly application: ApplicationBase;
     getApplication(): ApplicationBase;
 }
 
@@ -53,23 +49,15 @@ interface IApplicationService {
  abstract class ApplicationBase implements IApplication {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     constructor(_configurationPath: string) {
-        if (this.constructor === ApplicationBase.prototype.constructor) {
-            throw new AbstractClassError();
-        }
     }
-    /**
-     * Registers an application strategy e.g. an singleton service which to be used in application contextr
-     * @param {Function} serviceCtor
-     * @param {Function} strategyCtor
-     * @returns IApplication
-     */
-     abstract useStrategy(serviceCtor: ApplicationServiceConstructor<any>, strategyCtor: ApplicationServiceConstructor<any>): this;
+    
+    abstract useStrategy(serviceCtor: ApplicationServiceConstructor<any>, strategyCtor: ApplicationServiceConstructor<any>): this;
 
-     abstract useService(serviceCtor: ApplicationServiceConstructor<any>): this;
+    abstract useService(serviceCtor: ApplicationServiceConstructor<any>): this;
 
-     abstract hasService<T>(serviceCtor: ApplicationServiceConstructor<T>): boolean;
+    abstract hasService<T>(serviceCtor: ApplicationServiceConstructor<T>): boolean;
 
-     abstract getService<T>(serviceCtor: ApplicationServiceConstructor<T>): T;
+    abstract getService<T>(serviceCtor: ApplicationServiceConstructor<T>): T;
     /**
      * @returns {ConfigurationBase}
      */
@@ -83,23 +71,19 @@ interface IApplicationService {
  * @class
  */
 class ApplicationService implements IApplicationService {
-    private readonly _application: ApplicationBase;
-
-    constructor(app: ApplicationBase) {
+    
+    constructor(public readonly application: ApplicationBase) {
         if (this.constructor === ApplicationService.prototype.constructor) {
             throw new AbstractClassError();
         }
-        this._application = app;
     }
     /**
-     * @returns {ApplicationBase}
+     * Retrieves the current application instance.
+     * 
+     * @returns {ApplicationBase} The current application instance.
      */
     getApplication(): ApplicationBase {
-        return this._application;
-    }
-
-    get application(): ApplicationBase {
-        return this._application;
+        return this.application;
     }
 }
 

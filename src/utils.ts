@@ -911,6 +911,13 @@ class Base26Number {
      * @param {number} x
      * @returns {string}
      */
+    /**
+     * Converts a non-negative integer to a base-26 string representation using lowercase letters.
+     * 
+     * @param x - The non-negative integer to be converted. Must be between 0 and 208827064575 inclusive.
+     * @returns The base-26 string representation of the input number.
+     * @throws Will throw an error if the input number is negative or greater than 208827064575.
+     */
     static toBase26(x: number): string {
         let num = Math.floor(x | 0);
         if (num < 0) {

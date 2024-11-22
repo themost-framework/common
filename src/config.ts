@@ -1,5 +1,4 @@
-// MOST Web Framework Codename Zero Gravity Copyright (c) 2017-2022, THEMOST LP All rights reserved
-
+// @themost-ramework Codename Centroid Copyright (c) 2017-2025, THEMOST LP All rights reserved
 import { at as _at, set as _set} from 'lodash';
 import { Args } from './utils';
 
@@ -11,8 +10,9 @@ declare interface WindowEnv {
 }
 
 // tslint:disable-next-line:ban-types
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-declare type StrategyConstructor<T> = Function & { prototype: T };
+declare type StrategyConstructor<T> = {
+    new (config: ConfigurationBase): T;
+}
 
 /**
  * @class Represents an application configuration
@@ -22,25 +22,23 @@ declare type StrategyConstructor<T> = Function & { prototype: T };
  */
 class ConfigurationBase {
 
-    protected strategies: any = {};
-    protected config: any = {
-        settings: {
-        }
-    };
-
-    constructor() {
-        //
+    protected strategies: {
+        [key: string]: any;
+    } = {};
+    
+    constructor(protected config?: any) {
+        if (typeof config === 'undefined') {
+            this.config = {
+                settings: {
+                }
+            };
+        }    
     }
-
+    
     get settings(): any {
         return this.config && this.config.settings;
     }
 
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns the configuration source object
-     * @returns {*}
-     */
     getSource(): any {
         return this.config;
     }
@@ -50,9 +48,10 @@ class ConfigurationBase {
      * @param {string} p - A string which represents an object path
      * @returns {Object|Array}
      */
-    getSourceAt(p: string): any {
+    getSourceAt<T>(p: string): T {
         return _at(this.config, p.replace(/\//g, '.'))[0];
     }
+    
     //noinspection JSUnusedGlobalSymbols
     /**
      * Returns a boolean which indicates whether the specified  object path exists or not (e.g. settings.auth.cookieName or settings/auth/cookieName)
@@ -79,14 +78,14 @@ class ConfigurationBase {
      * @param {Function=} strategyCtor
      * @returns ConfigurationBase
      */
-    useStrategy(strategyBaseCtor: any, strategyCtor?: any) {
+    useStrategy(strategyBaseCtor: StrategyConstructor<any>, strategyCtor?: StrategyConstructor<any>): this {
         Args.notFunction(strategyBaseCtor, 'Configuration strategy constructor');
         if (typeof strategyCtor === 'undefined') {
             this.strategies['$'.concat(strategyBaseCtor.name)] = new strategyBaseCtor(this);
             return this;
         }
         Args.notFunction(strategyCtor, 'Strategy constructor');
-        this.strategies['$'.concat(strategyBaseCtor.name)] = new strategyCtor(this);
+        this.strategies[`$${strategyBaseCtor.name}`] = new strategyCtor(this);
         return this;
     }
     /**
@@ -95,16 +94,16 @@ class ConfigurationBase {
      */
      getStrategy<T>(strategyBaseCtor: StrategyConstructor<T>): T {
         Args.notFunction(strategyBaseCtor, 'Configuration strategy constructor');
-        return this.strategies['$'.concat(strategyBaseCtor.name)];
+        return this.strategies[`$${strategyBaseCtor.name}`];
     }
 
     /**
      * Gets a configuration strategy
      * @param {Function} strategyBaseCtor
      */
-    hasStrategy(strategyBaseCtor: any) {
+    hasStrategy(strategyBaseCtor: StrategyConstructor<any>): boolean {
         Args.notFunction(strategyBaseCtor, 'Configuration strategy constructor');
-        return typeof this.strategies['$'.concat(strategyBaseCtor.name)] !== 'undefined';
+        return typeof this.strategies[`$${strategyBaseCtor.name}`] !== 'undefined';
     }
 }
 
