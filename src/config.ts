@@ -2,7 +2,6 @@
 
 import { at as _at, set as _set} from 'lodash';
 import { Args } from './utils';
-import { AbstractClassError } from './errors';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare interface WindowEnv {
@@ -109,18 +108,25 @@ class ConfigurationBase {
     }
 }
 
-class ConfigurationStrategy {
-    private readonly _config: ConfigurationBase;
-    constructor(config: ConfigurationBase) {
-        Args.check(this.constructor.name !== ConfigurationStrategy.name, new AbstractClassError());
-        Args.notNull(config, 'Configuration');
-        this._config = config;
+/**
+ * Abstract class representing a configuration strategy.
+ * 
+ * @abstract
+ * @class ConfigurationStrategy
+ * @param {ConfigurationBase} configuration - The base configuration object.
+ * @throws {Error} If the configuration is null or undefined.
+ */
+abstract class ConfigurationStrategy {
+    constructor(protected configuration: ConfigurationBase) {
+        Args.notNull(configuration, 'Configuration');
     }
     /**
-     * @returns {ConfigurationBase}
+     * Retrieves the current configuration.
+     *
+     * @returns {ConfigurationBase} The current configuration instance.
      */
     getConfiguration(): ConfigurationBase {
-        return this._config;
+        return this.configuration;
     }
 }
 

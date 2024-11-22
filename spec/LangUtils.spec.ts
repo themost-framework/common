@@ -12,7 +12,6 @@ describe('LangUtils', () => {
     });
 
     it('should use convert', () => {
-        const object = {};
         let result = LangUtils.convert('true');
         expect(result).toBeTruthy();
         result = LangUtils.convert('400');
@@ -24,7 +23,6 @@ describe('LangUtils', () => {
     });
 
     it('should parse boolean', () => {
-        const object = {};
         let result = LangUtils.parseBoolean('true');
         expect(result).toBeTruthy();
         result = LangUtils.parseBoolean('yes');
@@ -38,13 +36,11 @@ describe('LangUtils', () => {
     });
 
     it('should parse float', () => {
-        const object = {};
         const result = LangUtils.parseFloat('9.6');
         expect(result).toEqual(9.6);
     });
 
     it('should parse int', () => {
-        const object = {};
         const result = LangUtils.parseInt('750');
         expect(result).toEqual(750);
     });

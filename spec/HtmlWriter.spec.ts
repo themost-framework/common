@@ -46,7 +46,7 @@ describe('HtmlWriter', () => {
         writer.renderBeginTag('div');
         writer.renderEndTag();
         writer.renderEndTag();
-        let output: string = writer.toString();
+        const output: string = writer.toString();
         TraceUtils.log('HTML', output);
         expect(output).toBeTruthy();
     });
