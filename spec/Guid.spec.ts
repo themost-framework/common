@@ -1,4 +1,4 @@
-import {Guid} from '../utils';
+import {Guid} from '@themost/common';
 
 describe('Guid', () => {
     it('should create guid from string', () => {

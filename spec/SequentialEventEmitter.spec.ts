@@ -1,4 +1,4 @@
-import {SequentialEventEmitter} from '../emitter';
+import {SequentialEventEmitter} from '@themost/common';
 
 describe('SequentialEventEmitter', () => {
 
