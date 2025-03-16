@@ -258,7 +258,7 @@ LangUtils.parseForm = function (form, options) {
         return result;
     var keys = Object.keys(form);
     keys.forEach(function(key) {
-        if (form.hasOwnProperty(key))
+        if (Object.prototype.hasOwnProperty.call(form, key))
         {
             LangUtils.extend(result, key, form[key], options)
         }
@@ -584,6 +584,14 @@ function TraceUtils() {
         TraceUtils[loggerProperty] = logger;
     };
 
+    TraceUtils.newLogger = function() {
+        const newLogger = Object.create(TraceUtils[loggerProperty]);
+        // copy options
+        const logger = TraceUtils[loggerProperty];
+        newLogger.options = Object.assign({}, logger.options);
+        return newLogger;
+    };
+
     TraceUtils.level = function(level) {
         TraceUtils[loggerProperty].level(level);
     };
@@ -835,11 +843,11 @@ function timestamp() {
  */
 function writeError(level, err) {
 
-    var keys = _.filter(_.keys(err), function(x) {
-        return err.hasOwnProperty(x) && x!=='message' && typeof err[x] !== 'undefined' && err[x] != null;
+    var keys = _.filter(_.keys(err), function(key) {
+        return Object.prototype.hasOwnProperty.call(err, key) && key!=='message' && typeof err[key] !== 'undefined' && err[key] != null;
     });
     if (err instanceof Error) {
-        if (err.hasOwnProperty('stack')) {
+        if (Object.prototype.hasOwnProperty.call(err, 'stack')) {
             this.write(level, err.stack);
         }
         else {
@@ -874,7 +882,7 @@ function TraceLogger(options) {
     if (typeof options !== "undefined" && options !== null ) {
         this.options = options;
         //validate logging level
-        Args.check(LogLevels.hasOwnProperty(this.options.level), "Invalid logging level. Expected error, warn, info, verbose or debug.");
+        Args.check(Object.prototype.hasOwnProperty.call(LogLevels, this.options.level), "Invalid logging level. Expected error, warn, info, verbose or debug.");
     }
 }
 
@@ -883,7 +891,7 @@ function TraceLogger(options) {
  * @returns {*}
  */
 TraceLogger.prototype.level = function(level) {
-    Args.check(LogLevels.hasOwnProperty(level), "Invalid logging level. Expected error, warn, info, verbose or debug.");
+    Args.check(Object.prototype.hasOwnProperty.call(LogLevels, level), "Invalid logging level. Expected error, warn, info, verbose or debug.");
     this.options.level = level;
     return this;
 };
