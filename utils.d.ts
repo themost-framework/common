@@ -276,7 +276,7 @@ export declare class TraceLogger implements ITraceLogger {
     verbose(...data: any[]): void;
     debug(...data: any[]): void;
     private timestamp();
-    private write(level, text);
+    protected write(level, text);
 }
 export declare class TraceUtils {
 
