@@ -279,6 +279,9 @@ export declare class TraceUtils {
     static level(level: string): void;
 
     static useLogger(logger: ITraceLogger): void;
+
+    static newLogger(): ITraceLogger;
+
     /**
      * @static
      * @param {...*} data
