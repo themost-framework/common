@@ -256,6 +256,10 @@ export interface ITraceLogger {
      * @param {...*} data
      */
     debug(...data: any[]): any;
+    /**
+     * @param {...*} data
+     */
+    verbose(...data: any[]): any;
 }
 export interface ITraceLoggerOptions {
     colors: boolean;
@@ -310,6 +314,12 @@ export declare class TraceUtils {
      * @param {...*} data
      */
     static debug(...data: any[]): void;
+    /**
+     *
+     * @static
+     * @param {...*} data
+     */
+    static verbose(...data: any[]): void;
 }
 
 /**

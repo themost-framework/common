@@ -585,7 +585,11 @@ function TraceUtils() {
     };
 
     TraceUtils.newLogger = function() {
-        return Object.create(TraceUtils[loggerProperty]);
+        const newLogger = Object.create(TraceUtils[loggerProperty]);
+        // copy options
+        const logger = TraceUtils[loggerProperty];
+        newLogger.options = Object.assign({}, logger.options);
+        return newLogger;
     };
 
     TraceUtils.level = function(level) {
