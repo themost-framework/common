@@ -1,5 +1,5 @@
 // tslint:disable-next-line:ban-types
-declare type StrategyConstructor<T> = Function & { prototype: T };
+declare type StrategyConstructor<T> = new(...arg?: unknown) => T;
 /**
  * @class
  */
@@ -14,20 +14,16 @@ export declare class ConfigurationBase {
      * @param {ConfigurationBase} configuration
      * @returns ConfigurationBase - An instance of ApplicationConfiguration class which represents the current configuration
      */
-    public static setCurrent(configuration: ConfigurationBase): any;
-    public readonly settings: any;
-    /**
-     * @constructor
-     * @param {string=} configPath
-     */
-    constructor(configPath?: string);
+    public static setCurrent(configuration: ConfigurationBase): ConfigurationBase;
+    public readonly settings: unknown;
+    constructor(configPathOrSource?: string | unknown);
     /**
      * Register a configuration strategy
      * @param {Function} strategyBaseCtor
      * @param {Function=} strategyCtor
      * @returns ConfigurationBase
      */
-    public useStrategy(strategyBaseCtor: any, strategyCtor?: any): this;
+    public useStrategy(strategyBaseCtor: StrategyConstructor, strategyCtor?: StrategyConstructor): this;
     /**
      * Gets a configuration strategy
      * @param {Function} strategyBaseCtor
@@ -43,13 +39,13 @@ export declare class ConfigurationBase {
      * Returns the configuration source object
      * @returns {*}
      */
-    public getSource(): any;
+    public getSource(): unknown;
     /**
      * Returns the source configuration object based on the given path (e.g. settings.auth.cookieName or settings/auth/cookieName)
      * @param {string} p - A string which represents an object path
      * @returns {Object|Array}
      */
-    public getSourceAt(p: string): any;
+    public getSourceAt(p: string): unknown;
     /**
      * Returns a boolean which indicates whether the specified  object path exists or not (e.g. settings.auth.cookieName or settings/auth/cookieName)
      * @param {string} p - A string which represents an object path
@@ -62,7 +58,7 @@ export declare class ConfigurationBase {
      * @param {*} value
      * @returns {Object}
      */
-    public setSourceAt(p: any, value: any): any;
+    public setSourceAt(p: string, value: unknown): unknown;
     /**
      * Sets the current execution path
      * @param {string} p
@@ -103,12 +99,21 @@ export declare class ModuleLoaderStrategy extends ConfigurationStrategy {
      * @param {string} modulePath
      * @returns {*}
      */
-    public require(modulePath: any): any;
+    public require(modulePath: string): unknown;
 }
 export declare class DefaultModuleLoaderStrategy extends ModuleLoaderStrategy {
     /**
      *
      * @param {ConfigurationBase} config
      */
-    constructor(config: any);
+    constructor(config: ConfigurationBase);
 }
+
+declare global {
+    interface Window {
+        env?: {
+            [k: string]: unknown;
+        };
+    }
+}
+

@@ -42,7 +42,7 @@ describe('ConfigurationBase', () => {
 
     it('should use ConfigurationBase.getSource()', ()=> {
         const configuration = new ConfigurationBase();
-        const source = configuration.getSource();
+        const source: unknown = configuration.getSource();
         expect(source).toEqual({ settings: {} });
         configuration.setSourceAt('settings/app/title', 'Test Application');
         expect(source).toEqual({
@@ -54,9 +54,33 @@ describe('ConfigurationBase', () => {
         });
     });
 
+    it('should serialize ConfigurationBase', ()=> {
+        const configuration = new ConfigurationBase();
+        configuration.setSourceAt('settings/app/title', 'Test Application');
+        const strConfig = JSON.stringify(configuration);
+        const configuration2: unknown = JSON.parse(strConfig)
+        expect(configuration2).toEqual({
+            configurationPath : configuration.getConfigurationPath(),
+            executionPath : configuration.getExecutionPath()
+        });
+    });
+
+    it('should load configuration source', ()=> {
+        const configuration = new ConfigurationBase({
+            settings: {
+                app: {
+                    title: 'Test Application'
+                }
+            }
+        });
+        const sourceAt: unknown = configuration.getSourceAt('settings/app/title');
+        expect(sourceAt).toEqual('Test Application')
+
+    });
+
     it('should use ConfigurationBase.getSourceAt()', ()=> {
         const configuration = new ConfigurationBase();
-        const source = configuration.getSource();
+        const source: unknown = configuration.getSource();
         expect(source).toEqual({ settings: {} });
         configuration.setSourceAt('settings/app/title', 'Test Application');
         expect(configuration.getSourceAt('settings/app/title')).toBe('Test Application');
@@ -64,7 +88,7 @@ describe('ConfigurationBase', () => {
 
     it('should use ConfigurationBase.setSourceAt()', ()=> {
         const configuration = new ConfigurationBase();
-        const source = configuration.getSource();
+        const source: unknown = configuration.getSource();
         expect(source).toEqual({ settings: {} });
         configuration.setSourceAt('settings/app/title', 'Test Application');
         expect(configuration.getSourceAt('settings/app/title')).toBe('Test Application');
