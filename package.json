@@ -1,13 +1,12 @@
 {
   "name": "@themost/common",
-  "version": "2.11.1",
+  "version": "2.12.0",
   "description": "MOST Web Framework Codename Blueshift - Common Module",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "test": "jasmine",
-    "typedoc": "typedoc",
-    "doc": "typedoc --disableOutputCheck --hideInPageTOC  --toc --entryDocument index.md  index.d.ts"
+    "lint": "eslint --config .eslintrc"
   },
   "engines": {
     "node": ">=12.22.12"
@@ -39,6 +38,8 @@
     "@types/jasmine": "^3.6.0",
     "@types/node": "^14.14.6",
     "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "dotenv": "^8.2.0",
     "eslint": "^8.42.0",
     "eslint-plugin-node": "^11.1.0",
