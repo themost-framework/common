@@ -10,4 +10,12 @@ describe('Guid', () => {
         guid = Guid.from(String(15.450));
         expect(guid.toString()).toEqual('5b4db914-fd24-6bba-c859-67348632477b');
     });
+
+    it('should create guid from number', () => {
+        const guid1 = Guid.from(String(100));
+        expect(guid1).toBeTruthy();
+        const guid2 = Guid.from(String(101));
+        expect(guid2).toBeTruthy();
+        expect(guid1.toString() === guid2.toString()).toBeFalse();
+    });
 });
