@@ -1,6 +1,6 @@
 {
   "name": "@themost/common",
-  "version": "2.12.1",
+  "version": "2.12.2",
   "description": "MOST Web Framework Codename Blueshift - Common Module",
   "main": "index.js",
   "types": "index.d.ts",
@@ -31,7 +31,7 @@
     "lodash": "^4.17.21",
     "sprintf-js": "^1.1.2",
     "symbol": "^0.3.1",
-    "uuid": "^11.1.1"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
