@@ -28,7 +28,6 @@
     "crypto-js": "^4.2.0",
     "es6-promise": "^4.2.8",
     "events": "^3.2.0",
-    "hashmap": "^2.3.0",
     "lodash": "^4.17.21",
     "sprintf-js": "^1.1.2",
     "symbol": "^0.3.1"
