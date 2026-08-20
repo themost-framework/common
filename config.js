@@ -57,7 +57,7 @@ function ConfigurationBase(configPath) {
     }
     catch (err) {
         if (err.code === 'MODULE_NOT_FOUND') {
-            TraceUtils.log('The environment specific configuration cannot be found or is inaccessible.');
+            TraceUtils.debug('The environment specific configuration cannot be found or is inaccessible.');
             try {
                 configSourcePath = PathUtils.join(this[configPathProperty], 'app.json');
                 TraceUtils.debug('Validating application configuration source on %s.', configSourcePath);
@@ -65,7 +65,7 @@ function ConfigurationBase(configPath) {
             }
             catch(err) {
                 if (err.code === 'MODULE_NOT_FOUND') {
-                    TraceUtils.log('The default application configuration cannot be found or is inaccessible.');
+                    TraceUtils.debug('The default application configuration cannot be found or is inaccessible.');
                 }
                 else {
                     TraceUtils.error('An error occurred while trying to open default application configuration.');
