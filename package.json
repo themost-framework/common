@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/themost-framework/themost.git"
+    "url": "git+https://github.com/themost-framework/common.git"
   },
   "author": "Kyriakos Barbounakis <k.barbounakis@gmail.com>",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/themost-framework/themost/issues"
+    "url": "https://github.com/themost-framework/common/issues"
   },
-  "homepage": "https://github.com/themost-framework/themost#readme",
+  "homepage": "https://github.com/themost-framework/common#readme",
   "dependencies": {
     "async": "^2.6.4",
     "blueimp-md5": "^2.7.0",
