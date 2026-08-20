@@ -1140,12 +1140,14 @@ Guid.newGuid = function() {
     return new Guid();
 };
 
+/**
+ * @typedef {TypeError & { code: string }} ArgumentError
+ */
 
 /**
  * @param {string} msg
  * @param {string} code
  * @constructor
- * @extends TypeError
  */
 function ArgumentError(msg, code) {
     ArgumentError.super_.bind(this)(msg);
