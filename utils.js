@@ -66,7 +66,7 @@ LangUtils.inherits = function(ctor, superCtor) {
         throw new TypeError("Super expression must either be null or a function, not " + typeof superCtor);
     }
 
-    //if process is running under node js
+    //if process is running under node.js
     if (isNode) {
         var utilModule = "util";
         var util = require(utilModule);
@@ -784,7 +784,7 @@ PathUtils.join = function (part) {
         // Remove leading and trailing slashes
         // Also remove "." segments
         if (!part1 || part1 === ".") continue;
-        // Interpret ".." to pop the last segment
+        // Interpret "." to pop the last segment
         if (part1 === "..") newParts.pop();
         // Push new path segments.
         else newParts.push(part1);
