@@ -8,7 +8,6 @@
  */
 ///
 var _ = require('lodash');
-var Symbol = require('symbol');
 var LangUtils = require("./utils").LangUtils;
 var Args = require('./utils').Args;
 var TraceUtils = require('./utils').TraceUtils;
