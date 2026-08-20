@@ -27,7 +27,7 @@ var IntegerRegex =/^[-+]?\d+$/g;
 var FloatRegex =/^[+-]?\d+(\.\d+)?$/g;
 var GuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
-var uuid = require('uuid');
+var crypto = require('./crypto');
 var MD5 = require('crypto-js/md5');
 /**
  * @class
@@ -565,7 +565,7 @@ function TextUtils() {
      * @returns {string}
      */
     TextUtils.newUUID = function() {
-        return uuid.v4();
+        return crypto.randomUUID();
     };
 
     var loggerProperty = Symbol("logger");
@@ -1095,7 +1095,7 @@ function Guid(value) {
         this[valueProperty] = test;
         return;
     }
-    this[valueProperty] = uuid.v4();
+    this[valueProperty] = crypto.randomUUID();
 }
 
 Guid.from = function(value) {

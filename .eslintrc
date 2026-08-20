@@ -16,6 +16,10 @@
     "before": false,
     "after": false
   },
+  "ignorePatterns": [
+    "**/*.ts",
+    "**/*.d.ts"
+  ],
   "rules": {
     "no-var": "off"
   }
