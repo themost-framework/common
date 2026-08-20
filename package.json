@@ -5,9 +5,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "jasmine",
-    "typedoc": "typedoc",
-    "doc": "typedoc --disableOutputCheck --hideInPageTOC  --toc --entryDocument index.md  index.d.ts"
+    "test": "jasmine"
   },
   "engines": {
     "node": ">=12.22.12"
