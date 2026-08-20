@@ -2,7 +2,6 @@ const isObjectLike = require('lodash/isObjectLike');
 const isObject = require('lodash/isObject');
 const at = require('lodash/at');
 const set = require('lodash/set');
-const Symbol = require('symbol');
 const {TraceUtils, Args, PathUtils} = require('./utils');
 
 const currentConfiguration = Symbol('current');

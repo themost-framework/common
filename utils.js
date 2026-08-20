@@ -9,8 +9,7 @@
 ///
 var _ = require('lodash');
 var isNode = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
-var sprintf = require("sprintf-js").sprintf;
-var Symbol = require("symbol");
+var sprintf = require('sprintf-js').sprintf;
 
 // eslint-disable-next-line no-unused-vars
 var UUID_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -27,7 +26,7 @@ var IntegerRegex =/^[-+]?\d+$/g;
 var FloatRegex =/^[+-]?\d+(\.\d+)?$/g;
 var GuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
-var uuid = require('uuid');
+var crypto = require('./crypto');
 var MD5 = require('crypto-js/md5');
 /**
  * @class
@@ -63,13 +62,13 @@ LangUtils.inherits(Dog,Animal);
  */
 LangUtils.inherits = function(ctor, superCtor) {
 
-    if (typeof superCtor !== "function" && superCtor !== null) {
-        throw new TypeError("Super expression must either be null or a function, not " + typeof superCtor);
+    if (typeof superCtor !== 'function' && superCtor !== null) {
+        throw new TypeError('Super expression must either be null or a function, not ' + typeof superCtor);
     }
 
     //if process is running under node js
     if (isNode) {
-        var utilModule = "util";
+        var utilModule = 'util';
         var util = require(utilModule);
         //call util.inherits() function
         return util.inherits(ctor, superCtor);
@@ -355,7 +354,7 @@ function Args() {
  * @param {string|Error} err
  */
 Args.check = function(expr, err) {
-    Args.notNull(expr,"Expression");
+    Args.notNull(expr,'Expression');
     var res;
     if (typeof expr === 'function') {
         res = !(expr.call());
@@ -367,7 +366,7 @@ Args.check = function(expr, err) {
         if (err instanceof Error) {
             throw err;
         }
-        throw new ArgumentError(err, "ECHECK");
+        throw new ArgumentError(err, 'ECHECK');
     }
 };
 
@@ -378,7 +377,7 @@ Args.check = function(expr, err) {
  */
 Args.notNull = function(arg, name) {
     if (typeof arg === 'undefined' || arg === null) {
-        throw new ArgumentError(name + " may not be null or undefined", "ENULL");
+        throw new ArgumentError(name + ' may not be null or undefined', 'ENULL');
     }
 };
 
@@ -388,7 +387,7 @@ Args.notNull = function(arg, name) {
  */
 Args.notString = function(arg, name) {
     if (typeof arg !== 'string') {
-        throw new ArgumentError(name + " must be a string", "EARG");
+        throw new ArgumentError(name + ' must be a string', 'EARG');
     }
 };
 
@@ -398,7 +397,7 @@ Args.notString = function(arg, name) {
  */
 Args.notFunction = function(arg, name) {
     if (typeof arg !== 'function') {
-        throw new ArgumentError(name + " must be a function", "EARG");
+        throw new ArgumentError(name + ' must be a function', 'EARG');
     }
 };
 
@@ -408,7 +407,7 @@ Args.notFunction = function(arg, name) {
  */
 Args.notNumber = function(arg, name) {
     if ((typeof arg !== 'number') || isNaN(arg)) {
-        throw new ArgumentError(name + " must be number", "EARG");
+        throw new ArgumentError(name + ' must be number', 'EARG');
     }
 };
 
@@ -419,10 +418,10 @@ Args.notNumber = function(arg, name) {
 Args.notEmpty = function(arg, name) {
     Args.notNull(arg,name);
     if ((Object.prototype.toString.bind(arg)() === '[object Array]') && (arg.length === 0)) {
-        throw new ArgumentError(name + " may not be empty","EEMPTY");
+        throw new ArgumentError(name + ' may not be empty','EEMPTY');
     }
     else if ((typeof arg === 'string') && (arg.length===0)) {
-        throw new ArgumentError(name + " may not be empty","EEMPTY");
+        throw new ArgumentError(name + ' may not be empty','EEMPTY');
     }
 };
 
@@ -433,7 +432,7 @@ Args.notEmpty = function(arg, name) {
 Args.notNegative = function(arg, name) {
     Args.notNumber(arg,name);
     if (arg<0) {
-        throw new ArgumentError(name + " may not be negative", "ENEG");
+        throw new ArgumentError(name + ' may not be negative', 'ENEG');
     }
 };
 
@@ -444,7 +443,7 @@ Args.notNegative = function(arg, name) {
 Args.notPositive = function(arg, name) {
     Args.notNumber(arg,name);
     if (arg<=0) {
-        throw new ArgumentError(name + " may not be negative or zero", "EPOS");
+        throw new ArgumentError(name + ' may not be negative or zero', 'EPOS');
     }
 };
 
@@ -565,10 +564,10 @@ function TextUtils() {
      * @returns {string}
      */
     TextUtils.newUUID = function() {
-        return uuid.v4();
+        return crypto.randomUUID();
     };
 
-    var loggerProperty = Symbol("logger");
+    var loggerProperty = Symbol('logger');
 
 /**
  * @class
@@ -668,8 +667,8 @@ function RandomUtils() {
      */
     RandomUtils.randomChars = function(length) {
         length = length || 8;
-        var chars = "abcdefghkmnopqursuvwxz2456789ABCDEFHJKLMNPQURSTUVWXYZ";
-        var str = "";
+        var chars = 'abcdefghkmnopqursuvwxz2456789ABCDEFHJKLMNPQURSTUVWXYZ';
+        var str = '';
         for(var i = 0; i < length; i++) {
             str += chars.substr(this.randomInt(0, chars.length-1),1);
         }
@@ -693,7 +692,7 @@ function RandomUtils() {
      */
     RandomUtils.randomHex = function(length) {
         length = (length || 8)*2;
-        var str = "";
+        var str = '';
         for(var i = 0; i < length; i++) {
             str += HEX_CHARS.substr(this.randomInt(0, HEX_CHARS.length-1),1);
         }
@@ -741,7 +740,7 @@ function NumberUtils() {
         if (num>208827064575) {
             throw new Error('A positive integer bigger than 208827064575 cannot be converted to base-26 format.');
         }
-        var out = "";
+        var out = '';
         var length= 1;
         var a = 'a'.charCodeAt(0);
         while(length<=8)
@@ -768,7 +767,7 @@ function PathUtils() {
  */
 // eslint-disable-next-line no-unused-vars
 PathUtils.join = function (part) {
-    var pathModule = "path";
+    var pathModule = 'path';
     if (isNode) {
         var path = require(pathModule);
         return path.join.apply(null, Array.prototype.slice.call(arguments));
@@ -776,7 +775,7 @@ PathUtils.join = function (part) {
     // Split the inputs into a list of path commands.
     var parts = [], i, l;
     for (i = 0, l = arguments.length; i < l; i++) {
-        parts = parts.concat(arguments[i].split("/"));
+        parts = parts.concat(arguments[i].split('/'));
     }
 // Interpret the path commands to get the new resolved path.
     var newParts = [];
@@ -784,32 +783,32 @@ PathUtils.join = function (part) {
         var part1 = parts[i];
         // Remove leading and trailing slashes
         // Also remove "." segments
-        if (!part1 || part1 === ".") continue;
+        if (!part1 || part1 === '.') continue;
         // Interpret ".." to pop the last segment
-        if (part1 === "..") newParts.pop();
+        if (part1 === '..') newParts.pop();
         // Push new path segments.
         else newParts.push(part1);
     }
 // Preserve the initial slash if there was one.
-    if (parts[0] === "") newParts.unshift("");
+    if (parts[0] === '') newParts.unshift('');
 // Turn back into a single string path.
-    return newParts.join("/") || (newParts.length ? "/" : ".");
+    return newParts.join('/') || (newParts.length ? '/' : '.');
 };
 
-var Reset = "\x1b[0m";
-var FgBlack = "\x1b[30m";
-var FgRed = "\x1b[31m";
-var FgGreen = "\x1b[32m";
+var Reset = '\x1b[0m';
+var FgBlack = '\x1b[30m';
+var FgRed = '\x1b[31m';
+var FgGreen = '\x1b[32m';
 // eslint-disable-next-line no-unused-vars
-var FgYellow = "\x1b[33m";
-var FgBlue = "\x1b[34m";
-var FgMagenta = "\x1b[35m";
+var FgYellow = '\x1b[33m';
+var FgBlue = '\x1b[34m';
+var FgMagenta = '\x1b[35m';
 // eslint-disable-next-line no-unused-vars
-var FgCyan = "\x1b[36m";
+var FgCyan = '\x1b[36m';
 // eslint-disable-next-line no-unused-vars
-var FgWhite = "\x1b[37m";
+var FgWhite = '\x1b[37m';
 
-var Bold = "\x1b[1m";
+var Bold = '\x1b[1m';
 
 var LogLevels = {
     error: 0,
@@ -858,8 +857,8 @@ function writeError(level, err) {
         this.write(level, err.toString());
     }
     if (keys.length>0) {
-        this.write(level, "Error: " + _.map(keys, function(x) {
-            return "[" + x + "]=" + err[x].toString()
+        this.write(level, 'Error: ' + _.map(keys, function(x) {
+            return '[' + x + ']=' + err[x].toString()
         }).join(', '));
     }
 }
@@ -872,17 +871,17 @@ function writeError(level, err) {
 function TraceLogger(options) {
     this.options = {
         colors:false,
-        level:"info"
+        level:'info'
     };
-    if (typeof options === "undefined" && options !== null && isNode) {
-        if (isNode && process.env.NODE_ENV === "development") {
-            this.options.level = "debug";
+    if (typeof options === 'undefined' && options !== null && isNode) {
+        if (isNode && process.env.NODE_ENV === 'development') {
+            this.options.level = 'debug';
         }
     }
-    if (typeof options !== "undefined" && options !== null ) {
+    if (typeof options !== 'undefined' && options !== null ) {
         this.options = options;
         //validate logging level
-        Args.check(Object.prototype.hasOwnProperty.call(LogLevels, this.options.level), "Invalid logging level. Expected error, warn, info, verbose or debug.");
+        Args.check(Object.prototype.hasOwnProperty.call(LogLevels, this.options.level), 'Invalid logging level. Expected error, warn, info, verbose or debug.');
     }
 }
 
@@ -891,7 +890,7 @@ function TraceLogger(options) {
  * @returns {*}
  */
 TraceLogger.prototype.level = function(level) {
-    Args.check(Object.prototype.hasOwnProperty.call(LogLevels, level), "Invalid logging level. Expected error, warn, info, verbose or debug.");
+    Args.check(Object.prototype.hasOwnProperty.call(LogLevels, level), 'Invalid logging level. Expected error, warn, info, verbose or debug.');
     this.options.level = level;
     return this;
 };
@@ -905,15 +904,15 @@ TraceLogger.prototype.log = function(data) {
         return;
     }
     if (data instanceof Error) {
-        return writeError.bind(this)("info",data);
+        return writeError.bind(this)('info',data);
     }
     if (typeof data !== 'string') {
-        return this.write("info", data.toString());
+        return this.write('info', data.toString());
     }
     if (args.length>1) {
-        return this.write("info", sprintf.apply(null, args));
+        return this.write('info', sprintf.apply(null, args));
     }
-    this.write("info", data);
+    this.write('info', data);
 };
 /**
  * @param {...*} data
@@ -925,15 +924,15 @@ TraceLogger.prototype.info = function(data) {
         return;
     }
     if (data instanceof Error) {
-        return writeError.bind(this)("info",data);
+        return writeError.bind(this)('info',data);
     }
     if (typeof data !== 'string') {
-        return this.write("info", data.toString());
+        return this.write('info', data.toString());
     }
     if (args.length>1) {
-        return this.write("info", sprintf.apply(null, args));
+        return this.write('info', sprintf.apply(null, args));
     }
-    this.write("info", data);
+    this.write('info', data);
 };
 /**
  * @param {...*} data
@@ -945,15 +944,15 @@ TraceLogger.prototype.error = function(data) {
         return;
     }
     if (data instanceof Error) {
-        return writeError.bind(this)("error",data);
+        return writeError.bind(this)('error',data);
     }
     if (typeof data !== 'string') {
-        return this.write("error", data.toString());
+        return this.write('error', data.toString());
     }
     if (args.length>1) {
-        return this.write("error", sprintf.apply(null, args));
+        return this.write('error', sprintf.apply(null, args));
     }
-    this.write("error", data);
+    this.write('error', data);
 };
 /**
  * @param {...*} data
@@ -965,15 +964,15 @@ TraceLogger.prototype.warn = function(data) {
         return;
     }
     if (data instanceof Error) {
-        return writeError.bind(this)("warn",data);
+        return writeError.bind(this)('warn',data);
     }
     if (typeof data !== 'string') {
-        return this.write("warn", data.toString());
+        return this.write('warn', data.toString());
     }
     if (args.length>1) {
-        return this.write("warn", sprintf.apply(null, args));
+        return this.write('warn', sprintf.apply(null, args));
     }
-    this.write("warn", data);
+    this.write('warn', data);
 };
 /**
  * @param {...*} data
@@ -985,15 +984,15 @@ TraceLogger.prototype.verbose = function(data) {
         return;
     }
     if (data instanceof Error) {
-        return writeError.bind(this)("verbose",data);
+        return writeError.bind(this)('verbose',data);
     }
     if (typeof data !== 'string') {
-        return this.write("verbose", data.toString());
+        return this.write('verbose', data.toString());
     }
     if (args.length>1) {
-        return this.write("verbose", sprintf.apply(null, args));
+        return this.write('verbose', sprintf.apply(null, args));
     }
-    this.write("verbose", data);
+    this.write('verbose', data);
 };
 /**
  * @param {...*} data
@@ -1005,15 +1004,15 @@ TraceLogger.prototype.debug = function(data) {
         return;
     }
     if (data instanceof Error) {
-        return writeError.bind(this)("debug",data);
+        return writeError.bind(this)('debug',data);
     }
     if (typeof data !== 'string') {
-        return this.write("debug", data.toString());
+        return this.write('debug', data.toString());
     }
     if (args.length>1) {
-        return this.write("debug", sprintf.apply(null, args));
+        return this.write('debug', sprintf.apply(null, args));
     }
-    this.write("debug", data);
+    this.write('debug', data);
 
 };
 
@@ -1023,10 +1022,10 @@ TraceLogger.prototype.write = function(level, text) {
     }
     if (this.options.colors) {
 // eslint-disable-next-line no-console
-        console.log(LogLevelColors[level] + timestamp() + " [" + level.toUpperCase() + "] " + text, Reset);
+        console.log(LogLevelColors[level] + timestamp() + ' [' + level.toUpperCase() + '] ' + text, Reset);
     } else {
 // eslint-disable-next-line no-console
-        console.log(timestamp() + " [" + level.toUpperCase() + "] " + text);
+        console.log(timestamp() + ' [' + level.toUpperCase() + '] ' + text);
     }
 };
 
@@ -1050,14 +1049,14 @@ function Base26Number(value) {
 Base26Number.toBase26 = function(x) {
     var num = Math.floor(x | 0);
     if (num<0) {
-        throw new Error("A non-positive integer cannot be converted to base-26 format.");
+        throw new Error('A non-positive integer cannot be converted to base-26 format.');
     }
     if (num>208827064575) {
-        throw new Error("A positive integer bigger than 208827064575 cannot be converted to base-26 format.");
+        throw new Error('A positive integer bigger than 208827064575 cannot be converted to base-26 format.');
     }
-    var out = "";
+    var out = '';
     var length= 1;
-    var a = "a".charCodeAt(0);
+    var a = 'a'.charCodeAt(0);
     while(length<=8) {
         out += String.fromCharCode(a + (num % 26));
         num = Math.floor(num / 26);
@@ -1073,29 +1072,29 @@ Base26Number.toBase26 = function(x) {
 Base26Number.fromBase26 = function(s) {
     var num = 0;
     if (!/[a-z]{8}/.test(s)) {
-        throw new Error("Invalid base-26 format.");
+        throw new Error('Invalid base-26 format.');
     }
-    var a = "a".charCodeAt(0);
+    var a = 'a'.charCodeAt(0);
     for (var i = 7; i >=0; i--) {
         num = (num * 26) + (s[i].charCodeAt(0) - a);
     }
     return num;
 };
 
-var valueProperty = Symbol("value");
+var valueProperty = Symbol('value');
 /**
  * @class
  * @param {string=} value
  * @constructor
  */
 function Guid(value) {
-    if (typeof value === "string") {
-        var test = value.replace(/^{/,"").replace(/{$/,"");
-        Args.check(GuidRegex.test(test),"Value must be a valid UUID");
+    if (typeof value === 'string') {
+        var test = value.replace(/^{/,'').replace(/{$/,'');
+        Args.check(GuidRegex.test(test),'Value must be a valid UUID');
         this[valueProperty] = test;
         return;
     }
-    this[valueProperty] = uuid.v4();
+    this[valueProperty] = crypto.randomUUID();
 }
 
 Guid.from = function(value) {
@@ -1129,7 +1128,7 @@ Guid.isGuid = function (s) {
     if (s instanceof Guid) {
         return true;
     }
-    if (typeof s !== "string") {
+    if (typeof s !== 'string') {
         return false;
     }
     return GuidRegex.test(s);
@@ -1143,15 +1142,18 @@ Guid.newGuid = function() {
 
 
 /**
+ * @typedef {TypeError & { code: string }} ArgumentError
+ */
+
+/**
  * @param {string} msg
  * @param {string} code
  * @constructor
- * @extends TypeError
  */
 function ArgumentError(msg, code) {
     ArgumentError.super_.bind(this)(msg);
     this.message = msg;
-    this.code = code || "EARG";
+    this.code = code || 'EARG';
     if (typeof Error.captureStackTrace === 'function') {
         Error.captureStackTrace(this, this.constructor);
     }

@@ -1,0 +1,1 @@
+module.exports = (typeof window !== 'undefined' && window.crypto) ? window.crypto : require('crypto');
